@@ -1,2 +1,4 @@
-HELLO NOTES!
-hello to you to!!
+upg: 
+  - make root branches
+      - language
+      - platform
