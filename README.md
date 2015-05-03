@@ -1,4 +1,3 @@
 # lab
-lab
 
-This is a lab.
+Technology Examples
