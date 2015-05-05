@@ -3,20 +3,17 @@
 
 var walk = require('walk');
 var w = walk.walk('/home/user');
-var a = 0;
 
 w.on('file',function(r,s,n){
-console.log(r,s.name,s.type,s.size);	
-	a += s.size;
+	console.log(r,s.name,s.type,s.size);	
 	n();
 	});
 
 w.on('end',function(){
-console.log(a);
 	});
 
 w.on('error',function(r,sa,n){
-console.log('ERROR',r,sa);
+	console.log('ERROR',r,sa);
 	n();
 	});
 
