@@ -1,0 +1,45 @@
+<div class='pick-me'>Hello!</div>
+
+<p><textarea></textarea>
+<p>Ready for your paste. (via main system)
+<p><button onclick='paste()'>Paste (?)</button>
+
+<script>
+
+	// is it possible to paste a file?
+
+	document.addEventListener('paste',function(e){
+		var d = e.clipboardData
+		var types = d.types  // ["text/plain", "text/html"]
+		var items = d.items  // as objects.
+
+/*
+		for(var i=0;i<items.length;i++){
+			var v = items[i]
+			var kind = v.kind
+			var type = v.type
+			var f = v.getAsFile()
+			v.getAsString(function(a){
+				console.log('string',a)
+				})
+			console.log(i,v,f,kind,type)
+			}//for
+*/
+
+
+		//or
+		console.log(types,items.length)
+
+		// var dp = d.getData('text/plain')
+		// var dh = d.getData('text/html')
+		console.log('eeee',d,d.types)
+
+		d.types.forEach(function(v){console.log(v,d.getData(v))})
+
+		e.preventDefault()
+		})
+
+	function paste(){
+		console.log('trying paste...') // upg: can this work?
+		}//func
+</script>
