@@ -1,0 +1,9 @@
+<script>
+	console.log(navigator)
+	navigator.permissions.query({name:'geolocation'}).
+		then(function(d){
+			console.log(d)
+			var status = d.status // "prompt"
+			d.onchange = function(){console.log('geolocation change status changed to',this.status)}
+			})//then
+</script>
