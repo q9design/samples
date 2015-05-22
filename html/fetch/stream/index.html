@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+
+		Background read of file in chunks... cool.		
+
+		<script>
+			// http://jakearchibald.com/2015/thats-so-fetch/
+
+			var b = '..';
+			var f = b+'/random.bin';
+			f = b+'/lorem.txt';
+			fetch(f).
+				then(function(r){
+					console.log('r',r) // fetch object (headers/body/etc)
+
+					var reader = r.body.getReader(); // read control
+
+					console.log('reader',reader)
+
+							
+					var total = 0
+					var limit = 500000;
+					var decoder = new TextDecoder();
+					var readNext = function(){
+
+						reader.read().
+							then(function(d){
+								console.log('read',d)
+								var done = d.done
+
+								if(!done){
+									var value = d.value //Uint8Arrray  (or undefined if done == true)
+									var l = value.byteLength;
+									var d = decoder.decode(value) // convert Uint8Array to string.
+									total += l
+									console.log(l,d)
+
+									if(total < limit)
+										readNext();
+									else
+										reader.cancel('limit reached')	
+									}
+								else
+									{
+									console.log('Complete!',total)
+									}
+								})//then
+
+						}//func
+
+	
+
+					readNext()
+
+					})//then
+
+
+	
+		</script>
+	</body>
+</html>
