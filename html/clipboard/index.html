@@ -1,0 +1,33 @@
+<div class='pick-me'>Hello!</div>
+
+<p><textarea></textarea>
+
+<p><button onclick='paste()'>paste</button>
+
+<script>
+
+	//
+	// security issues make programatic triggering of paste scary.
+	//
+
+
+	function test(t){
+		t = t || ""
+		console.log('TEST:',t)
+		console.log('paste supported',document.queryCommandSupported('paste'))
+		console.log('paste enabled',document.queryCommandEnabled('paste'))
+		}//test
+
+
+	function paste(){
+		test('paste')
+
+		var d = document.querySelector('.pick-me');
+	
+		var r = document.execCommand('paste')
+		console.log('paste',r)
+
+		}
+
+	test('app start')
+</script>
