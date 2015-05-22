@@ -1,4 +1,4 @@
-#background read of url in chunks
+#background url read in chunks
 
 https://code.google.com/p/chromium/issues/detail?id=240603
 
