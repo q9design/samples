@@ -1,3 +1,5 @@
+#background read of url in chunks
+
 https://code.google.com/p/chromium/issues/detail?id=240603
 
 upg idea: - load a timestamped packeted gif or jpg stream... replacing the current image with the approrate item at the approrate time... cool.. could do audio too this way.
