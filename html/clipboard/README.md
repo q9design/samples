@@ -1,7 +1,9 @@
 http://updates.html5rocks.com/2015/04/cut-and-copy-commands
 
 http://www.w3.org/TR/2015/WD-clipboard-apis-20150421/
+
 https://www.chromestatus.com/feature/5223997243392000
+
 https://github.com/GoogleChrome/samples/tree/gh-pages/cut-and-copy
 
 https://developer.mozilla.org/en-US/docs/Web/API/Selection
