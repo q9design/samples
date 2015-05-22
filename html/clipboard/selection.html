@@ -1,0 +1,13 @@
+<div class='pick-me'>Hello! Highlight something and click get.</div>
+
+<p><textarea></textarea>
+
+<p><button onclick='go()'>get</button>
+
+<script>
+
+	function go(){
+		var s = window.getSelection()  // upg: can we get multiple clip types here too?: might have to copy to clipboard for that?
+		console.log('selection',s+"",s)
+		}
+</script>
