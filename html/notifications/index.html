@@ -1,0 +1,53 @@
+<script>
+
+	// https://googlechrome.github.io/samples/permissions/
+
+	console.log(navigator)
+	var q = {name:'notifications'}
+	navigator.permissions.query(q).
+		then(function(d){
+			console.log(q,d)
+			var status = d.status // "prompt", "granted", "denied"
+			d.onchange = function(){console.log('status changed to',this.status)}
+
+
+			//invoke...
+	
+			console.log('current status =',status)
+			if(status != 'granted'){
+				// get 
+				getPermission(); // normally you might want to do this at some sort of activate or install step.
+				}//if
+			else {
+				var n = new Notification(
+					"Welcome Back! :)",
+					{body:"hey hey hey!\nWhat's for supper?",
+					tag:'test',
+					icon:'i.png',
+					sound:'alert.ogg'}
+					);
+
+				n.onclick = function(){console.log('click')}
+				n.onshow = function(){console.log('show')} // it's possible to behind the queue and not show for a while?
+				n.onclose = function(){console.log('close')}
+
+				setTimeout(function(){n = new Notification('Replaced old message.',{tag:'test'})},20000); // after a long time like if later the user clicks something to remove message.
+				setTimeout(function(){n.close()},60000); // after a long time like if later the user clicks something to remove message.
+				}//else
+			})//then
+
+	var getPermission = function(){
+		 Notification.requestPermission(function(result) {
+			    if (result === 'denied') {
+			      console.log('Permission was not granted.');
+			    } else 
+			    if (result === 'default') {
+			      console.log('The permission request was dismissed.');
+			    }
+			    else
+  			      console.log('Permission was granted for notifications');
+			  });
+
+		}//func
+
+</script>
