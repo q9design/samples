@@ -8,6 +8,7 @@ https://googlechrome.github.io/samples/permissions/
 
 > can we check if in a 'disposable' browser situation like incognito.
 
+```
 enum PermissionName {
     "geolocation",
     "notifications",
@@ -25,3 +26,4 @@ interface PermissionStatus : EventTarget {
     readonly    attribute PermissionState status;
                 attribute EventHandler    onchange;
 };
+```
