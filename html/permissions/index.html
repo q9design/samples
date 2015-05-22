@@ -1,0 +1,40 @@
+<script>
+
+	// https://googlechrome.github.io/samples/permissions/
+
+	console.log(navigator)
+	var q = {name:'notifications'}
+	navigator.permissions.query(q).
+		then(function(d){
+			console.log(q,d)
+			var status = d.status // "prompt", "granted", "denied"
+			d.onchange = function(){console.log('status changed to',this.status)}
+
+
+			//invoke...
+	
+			console.log('current status =',status)
+			if(status != 'granted'){
+				// get 
+				getPermission(); // normally you might want to do this at some sort of activate or install step.
+				}//if
+			else {
+				var n = new Notification("Welcome Back! :)");
+				}//else
+			})//then
+
+	var getPermission = function(){
+		 Notification.requestPermission(function(result) {
+			    if (result === 'denied') {
+			      console.log('Permission was not granted.');
+			    } else 
+			    if (result === 'default') {
+			      console.log('The permission request was dismissed.');
+			    }
+			    else
+  			      console.log('Permission was granted for notifications');
+			  });
+
+		}//func
+
+</script>
