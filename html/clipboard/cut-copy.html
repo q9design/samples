@@ -1,0 +1,48 @@
+<div><span class='pick-me'>Hello!</span></div>
+
+<p><textarea>Text Area</textarea>
+
+<p><button onclick='go()'>copy</button>
+
+<p>Here's some text to highlight.
+
+<script>
+
+	function test(t){
+		t = t || ""
+		console.log('TEST:',t)
+		console.log('copy supported',document.queryCommandSupported('copy')) // this browser has the feature.
+		console.log('cut supported',document.queryCommandSupported('cut'))
+
+		console.log('copy enabled',document.queryCommandEnabled('copy')) // current highlight state makes this possible
+		console.log('cut enabled',document.queryCommandEnabled('cut'))	 // current highlight state makes this possible (might need to programatically select if going to cut.. current bug.)
+		}//test
+
+	function go(){
+		test('before')
+
+		var d = document.querySelector('.pick-me');
+		var d = document.querySelector('textarea');
+		var s = window.getSelection()
+		var t = s.toString()  // know what's highlighted.  (note this isn't what's in the clipboard.  its the thing currently highlighted on the screen)
+
+		console.log('ss',s)
+		console.log('selection >>'+t+'<<')
+
+		//  programatic selection.
+		//var r = document.createRange();
+		//s.removeAllRanges();
+		//r.selectNode(d)
+		//s.addRange(r)
+		//or...		
+		//d.select()
+		
+		test('after selection')
+	
+		var m = document.execCommand('copy') // or 'cut'
+		console.log('copy result',m)
+
+		}
+
+	test('app start') // prob not work here bc not in a user init action?
+</script>
