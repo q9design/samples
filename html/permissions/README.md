@@ -1,3 +1,5 @@
+# mannage browser feature rights
+
 http://updates.html5rocks.com/2015/04/permissions-api-for-the-web
 https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API
 https://w3c.github.io/permissions/
