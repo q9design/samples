@@ -1,0 +1,41 @@
+<p><textarea></textarea>
+
+Ready for your copy.
+
+
+<script>
+
+	document.addEventListener('copy',function(e){
+		var d = e.clipboardData
+		console.log('eeee',d)
+
+
+		// hmmm.. could we provide a file here? .. 
+
+		// see: setDragImage
+	
+	    	d.setData('text/plain', 'Hello, world!');             // override currently highlighted items.
+    		d.setData('text/html', '<b>Hello, world!</b>');
+
+		// 
+		// text/plain
+		// text/uri-list
+		// text/csv
+		// text/css
+		// text/html
+		// application/xhtml+xml
+		// image/png
+		// image/jpg, image/jpeg
+		// image/gif
+		// image/svg+xml
+		// application/xml, text/xml
+		// application/javascript
+		// application/json
+		// application/octet-stream
+		// 
+	
+
+
+		e.preventDefault()
+		})
+</script>
