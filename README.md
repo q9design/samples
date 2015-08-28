@@ -1,4 +1,4 @@
-# lab
+# public lab
 
 Usually Atomic Technology Samples
 

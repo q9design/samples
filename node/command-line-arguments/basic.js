@@ -1,3 +1,5 @@
+// see: minimist module
+
 console.log('args',process.argv);
 
 /*
