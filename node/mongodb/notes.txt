@@ -1,0 +1,15 @@
+> add to github lab
+
+> data processing examples
+	- walking
+	- count
+
+> query options.
+
+> delete db
+
+> stats
+
+> promise mode
+
+> what's best way to include/bundle with a electron app (just start it at the same time?)
