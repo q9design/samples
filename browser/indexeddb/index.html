@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+	<script type='text/notes'>
+		http://caniuse.com/indexeddb
+		https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
+		http://blogs.shephertz.com/2014/01/14/html5-learn-how-to-use-indexeddb/
+		http://demo.agektmr.com/storage/
+		http://www.html5rocks.com/en/tutorials/offline/quota-research/
+	</script>
+	<head>
+	</head>
+	<body>
+		<script>
+			console.log(window.indexedDB)
+			var gdb
+			if(window.indexedDB)
+				{
+				var i = indexedDB.open('db2',1)
+				console.log(i)
+				i.addEventListener('success',function(e){
+					console.log('success',e)
+					var db = e.target.result
+					console.log('db',db)
+					gdb = db
+					})
+				i.addEventListener('error',function(e){console.log('error',e)})
+				i.addEventListener('upgradeneeded',function(e){
+					console.log('upgradeneeded',e)
+					var db = e.target.result
+					console.log('db',db)
+					var s = db.createObjectStore("todo",{keyPath:'kee'})
+					console.log('objstor',s)
+					})
+				}
+			else
+				console.log("No window.indexedDB?")
+
+			function testA()
+				{
+				console.log('testA')
+				var t = gdb.transaction(['todo'],"readwrite")
+				var s = t.objectStore("todo")
+				var r = s.put({'text':'hi','kee':new Date().getTime()})
+				console.log(gdb,t,s,r)
+				}
+
+
+			function testB()
+				{
+				console.log('testB')
+				var t = gdb.transaction(['todo'],"readwrite")
+				console.log(t)
+				var s = t.objectStore('todo')
+				console.log(s)
+				
+				var kr = IDBKeyRange.lowerBound(0)
+				console.log(kr)
+				var cr = s.openCursor(kr)
+				console.log(cr)
+		
+				cr.addEventListener('success',function(e){
+					console.log(e)
+					var r = e.target.result
+					console.log('result',r)
+					if(r)
+						console.log(r.value)
+					
+					})
+
+			
+//				var s = t.objectStore("toodoo")
+				//var r = s.put({'text':'hi','kee':new Date().getTime()})
+//				console.log(gdb,t,s,r)
+				}
+
+		</script>
+
+		<button onclick='testA()'>Test A</button>
+		<button onclick='testB()'>Test B</button>
+	</body>
+</html>
+

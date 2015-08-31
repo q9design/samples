@@ -1,0 +1,20 @@
+<!doctype>
+<html>
+	<head>
+		<title>media devices</title>
+	</head>
+	<body>
+		<script src='adapter.js'></script>
+		<script>
+			navigator.mediaDevices.enumerateDevices().
+				then(function(d){
+					d.forEach(function(v){	
+						console.log('vv',v) // {label: "VF0415 Live! Cam Vid. IM Ultra Analog Mono", 
+								    //	kind: "audioinput", 
+								    //	deviceId: "a862b750d8690b7f4262f9bb83454bfe3476203b2ff06b9b1315797d5270b28c", 
+								    //	groupId: ""}
+						})
+					})
+		</script>
+	</body>
+</html>

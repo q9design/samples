@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+ <head>
+ </head>
+ <body>
+	<div class='host'>
+	</div>
+	<script>
+		"use strict"
+		// http://stackoverflow.com/questions/3293905/how-to-execute-javascript-code-on-iframe-load
+		// https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement
+
+		// see also HttpOnly and https secuire only cookies
+
+		console.log('local cookies',document.cookie)
+
+		var i = document.createElement('iframe')
+		console.log('sandbox : ',typeof(i.sandbox) != 'undefined',typeof(i.sandbox),i.sandbox) // sandbox : true string ""
+		i.sandbox = 'allow-same-origin allow-scripts'
+//		i.sandbox = 'allow-same-origin'
+//		i.sandbox = 'allow-scripts'
+		i.onload = function(e){
+				console.log('loaded',e,this)
+				resize()
+				}
+		i.src = 'widget.frame.html'
+//		i.src = 'http://domain/lab/browswer-platform/security/widget.frame.html'
+//		console.log("%O",i)
+		document.querySelector('.host').appendChild(i)	 // some things don't exist until inserted?
+		console.log("%O",i.contentWindow)
+//		i.contentWindow.document.body.innerHTML = "<script>alert(3);<\/script>"
+
+
+// upg: need way to detect when content in iframe has changed.
+//		setInterval(function(){console.log(1,i.contentWindow.document.body.clientWidth,i.contentWindow.document.body.clientHeight)},1000)
+/*		setInterval(function(){console.log(2,i.contentWindow.document.body.scrollWidth,i.contentWindow.document.body.scrollHeight)
+				var h = i.contentWindow.document.body.scrollHeight
+				var w = i.contentWindow.document.body.scrollWidth
+				console.log(w,h)
+				i.height = h
+				i.width = w
+				},1000)
+*/
+//		setInterval(function(){console.log(3,i.contentWindow.document.body.offsetWidth,i.contentWindow.document.body.offsetHeight)},1000)
+
+		var w = '<a href="http://www.accuweather.com/en/us/new-york-ny/10007/weather-forecast/349727" class="aw-widget-legal"><!-- By accessing and/or using this code snippet, you agree to AccuWeather’s terms and conditions (in English) which can be found at http://www.accuweather.com/en/free-weather-widgets/terms and AccuWeather’s Privacy Statement (in English) which can be found at http://www.accuweather.com/en/privacy. --></a><div id="awcc1398207559804" class="aw-widget-current"  data-locationkey="" data-unit="f" data-language="en-us" data-useip="true" data-uid="awcc1398207559804"></div><script type="text/javascript" src="http://oap.accuweather.com/launch.js"><\/script>'
+/*		var d = i.contentWindow.document
+		d.open()  //other ways?
+		d.write("<script>console.log(document.cookie)<\/script>")
+		d.write(w)
+		d.close()
+*/
+		var resize = function()
+			{
+				var h = i.contentWindow.document.body.scrollHeight
+				var w = i.contentWindow.document.body.scrollWidth
+				console.log(w,h)
+				i.height = h
+				i.width = w
+			}
+	</script>
+ </body>
+</html>

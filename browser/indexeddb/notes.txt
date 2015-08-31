@@ -1,0 +1,20 @@
+review libraires. / and poly fills.
+
+make sz diagram for the simple layout of structure.
+
+ http://www.dexie.org/
+
+* search thru all records - build indexes and compound indexes to accellerate search.
+
+store.createIndex('nameAndShoeSize', ['name', 'shoeSize']);  ::  IDBKeyRange.only(['David', 40]);
+
+10GB raw storage (perhaps compressed and 2byte chars)
+
+========================
+
+> storing lots of data.. then deleting.. search and ops still slow even when mostly empty.  perhaps will clear out on close all and reboot?
+	- changing DB version seems to fix it.
+
+http://www.codeproject.com/Articles/744986/How-to-do-some-magic-with-indexedDB
+
+~/.config/google-chrome/Default/IndexedDB/domain.com_0.indexeddb.leveldb

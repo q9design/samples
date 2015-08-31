@@ -1,0 +1,50 @@
+<style>
+	html {overflow: hidden;}
+	body {height: 100%; margin:0; padding:0; font: normal 16px arial;}
+	.container {position: absolute; overflow: hidden; top:0; right:0; left:0; bottom:0; padding: 15px;}
+	.content {-webkit-column-width: 250px; height: 100%; xborder: solid 1px red; overflow-x: scroll;}
+	li {padding: 5px;}
+</style>
+
+<div class='container'>
+	<div class='content'></div>
+</div>
+
+
+<script>
+// https://developer.mozilla.org/en-US/docs/Web/Events/wheel
+
+// next: is there a way to scroll Horz using scrollwheel (naturually?)
+
+var l = []
+l.push('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper lectus dapibus tellus dictum mattis. Suspendisse potenti. Nam ornare convallis tortor, at interdum libero semper vitae. Curabitur ac tortor at sem egestas tristique. Donec cursus nisi mi, sed bibendum justo porta eu. Nulla at ex tortor. Vestibulum accumsan vehicula vehicula. Nam fringilla orci ac pretium consequat.')
+l.push('Cras consectetur nisi felis, ut pretium metus ullamcorper at. Cras massa dolor, hendrerit vitae velit non, tincidunt molestie nulla. Integer ut ipsum malesuada sem consequat tristique vitae eu neque. Donec a nunc massa. Pellentesque quis velit egestas, laoreet purus sit amet, commodo orci. In et mattis diam. Praesent condimentum magna id augue malesuada, ac auctor leo porta. Quisque bibendum rutrum dolor non laoreet.')
+l.push('Curabitur pellentesque vehicula hendrerit. Fusce a dapibus lacus. Ut nec tellus et ante sagittis bibendum in at urna. Vestibulum cursus vitae lectus eget congue. Integer sed ante faucibus quam aliquam vehicula quis in tellus. Sed sed tellus id ligula congue accumsan eget sed nibh. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer suscipit, turpis sit amet euismod porta, odio ipsum viverra ligula, eget sollicitudin massa justo quis libero. Cras luctus tempus eros, et mollis ligula porta ac. Donec quis malesuada quam, quis aliquet purus. Aenean id orci posuere, mattis diam ac, maximus eros. Fusce vitae enim aliquam, semper mi at, fringilla lectus.')
+l.push('Vestibulum tempor sapien eu ligula rutrum, sit amet aliquet nunc laoreet. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras neque tellus, ornare nec lacinia ut, rhoncus eu lacus. Donec arcu nisi, viverra quis sem ac, auctor posuere dui. Nunc et tincidunt nulla. Aenean risus dui, commodo a facilisis eget, porttitor vitae sem. Phasellus vitae risus consequat, vehicula lectus feugiat, lobortis nunc. Mauris dignissim odio fermentum purus dapibus tincidunt. Fusce accumsan, ex sed sodales suscipit, velit justo aliquet nibh, semper semper libero ex sit amet nulla. Cras vel egestas arcu. Etiam porttitor vestibulum ultrices.')
+l.push('Etiam vulputate sed metus vitae pretium. Vivamus vel ante justo. Sed ut turpis vel purus dignissim ultrices. Nulla finibus consectetur nisl, sit amet gravida nunc consectetur vel. Sed euismod ut leo eget dapibus. Proin porta, diam eget posuere mollis, justo odio sagittis diam, ac auctor dolor sapien non ipsum. Fusce et neque ligula. Vivamus consectetur tristique turpis, vitae condimentum justo volutpat id. Pellentesque vehicula accumsan massa quis vestibulum. Donec ultrices consequat pulvinar. Nunc eu mauris dignissim, congue risus sed, porttitor libero. Aenean at augue nec sapien malesuada cursus. Aliquam malesuada imperdiet ultrices.')
+
+var d = document.querySelector('.content')
+
+var c = 0
+var tick = function(){
+	c++
+
+	var n = Math.floor(Math.random()*l.length)
+	var x = l[n].split('.')
+	x.pop()
+	var ll = (x[Math.floor(Math.random()*x.length)]).trim()
+	//d.innerHTML += "<p><h1>"+c+"</h1>"+ll+"."
+	d.innerHTML += "<li>"+ll+"."
+
+	d.scrollLeft = 99999
+
+	setTimeout(tick,Math.floor(Math.random()*100))
+	}//func
+
+tick()
+
+var we = new WheelEvent('eventtype')
+console.log(we)
+
+</script>
+

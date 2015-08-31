@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+	<head>
+		<script>
+		</script>
+		<style>
+			html {height: 100%;}
+			body {height: 100%;}
+			.go {position: absolute;top:0px;left: 0px;}
+
+			.go {	transition-property: top, opacity, color;
+				transition-duration: 3s, 25s, 2s;
+				transition-delay: 1s, 0s, 1s;
+			    }
+		</style>
+	</head>
+	<body>
+		<div class='go'>GO!</div>
+		<script>
+			var d = document.querySelector('.go')
+			document.body.onclick = function(){
+				d.style.top = '215px'
+				d.style.opacity = 0.0
+				d.style.color = 'red'
+				}
+		</script>
+	</body>
+</html>

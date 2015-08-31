@@ -1,0 +1,11 @@
+
+
+ AddType text/cache-manifest .appcache
+ #ExpiresByType text/cache-manifest "access plus 0 seconds"
+
+  # 2014.03.13
+   
+#  RewriteEngine on
+#  RewriteCond %{REQUEST_FILENAME} !-f
+#  RewriteRule ^(.*)$ i.php?_=$1 [L,QSA]
+

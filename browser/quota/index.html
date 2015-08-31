@@ -1,0 +1,22 @@
+<script>
+	// http://www.html5rocks.com/en/tutorials/offline/quota-research/
+	// http://demo.agektmr.com/storage/
+	// http://updates.html5rocks.com/2011/11/Quota-Management-API-Fast-Facts
+	//var storageInfo = storageInfo || webkitStorageInfo
+
+	// temporary and persistent refer to long term browser operation (not between sessions and such.. temporary memory is memory the browser can decide to clear (like indexedDB or localStorage)
+	var temporaryStorage = navigator.temporaryStorage || navigator.webkitTemporaryStorage
+	var persistentStorage = navigator.persistentStorage || navigator.webkitPersistentStorage
+	console.log(navigator,temporaryStorage,persistentStorage)
+
+	// DeprecatedStorageQuota
+
+	temporaryStorage.queryUsageAndQuota(function(usage,quota){
+		console.log('temporary usage and quota',usage,quota)
+		})
+
+	persistentStorage.queryUsageAndQuota(function(usage,quota){
+		console.log('persistent usage and quota',usage,quota)
+		})
+
+</script>

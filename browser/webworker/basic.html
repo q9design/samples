@@ -1,0 +1,47 @@
+<!doctype>
+<html>
+	<head>
+		<script>
+			// https://developer.mozilla.org/en-US/docs/Web/API/Worker
+			// https://developer.mozilla.org/en-US/docs/Web/Guide/Performance/Using_web_workers
+			// https://developer.mozilla.org/en-US/docs/Web/API/Worker/Functions_and_classes_available_to_workers
+			// http://www.html5rocks.com/en/tutorials/workers/basics/
+			// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/NsIWorkerScope#close()
+			// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/NsIWorkerMessageEvent
+		</script>
+	</head>
+	<body>
+
+		<script id='worker' type="text/js-worker">
+		  // This script WON'T be parsed by JS engines because its mime-type is text/js-worker.
+		  var myVar = "Hello World!";
+		  console.log('hi!')
+			addEventListener('message',function(e){
+				console.log(['message from host',e.data])
+				})
+			postMessage('yo.')
+			//self.close()
+		</script>
+
+		<script>
+
+		
+			var b = new Blob([document.querySelector('#worker').textContent],{type:'text/javascript'})
+			var u = URL.createObjectURL(b)
+			var w = new Worker(u)
+			w.addEventListener('message',function(e){
+				console.log('message from worker',e.data,e)
+				},false)
+
+			w.postMessage('hey!')
+
+			//w.terminate()
+
+			setInterval(function(){
+				var v = Math.round(performance.now())
+				document.body.innerHTML = v
+				document.title = v
+				},15) // see window.requestAnimationFrame()
+		</script>
+	</body>
+</html>

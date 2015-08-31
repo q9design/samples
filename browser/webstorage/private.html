@@ -1,0 +1,12 @@
+<script>
+	//test browser private mode and standard mode
+	// - standard mode and private mode maintain they own memory space.
+
+	window.addEventListener('storage',function(e){
+		var i = {key:e.key,o:e.oldValue,n:e.newValue,url:e.url}
+		console.log('change',e,i,localStorage)
+		})
+
+	localStorage.setItem('test',12345)
+	localStorage.setItem('test',Math.random())
+</script>

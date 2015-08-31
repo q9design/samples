@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Gamepad Lab</title>
+		<script>
+		// https://developer.mozilla.org/en-US/docs/Web/Guide/API/Gamepad
+		// https://developer.mozilla.org/en-US/docs/Web/API/navigator.getGamepads
+		</script>
+		<style>
+			.display {font-size: 75%;}
+		</style>
+	</head>
+	<body>
+		<pre class='display'></pre>
+		<script>
+			var jmap = {
+				'©Microsoft Xbox 360 Wireless Receiver for Windows (Vendor: 045e Product: 0719)' : 
+					{
+					l : ['axes',1,-1],
+					r : ['axes',4,-1]
+					},
+				'Logitech Gamepad F310 (STANDARD GAMEPAD Vendor: 046d Product: c21d)' : 
+					{
+					l : ['axes',1,-1],
+					r : ['axes',3,-1]
+					}
+				}//var
+
+			var disp = document.querySelector('.display')
+
+
+			setTimeout(function(){
+				console.log(navigator.getGamepads())
+				},3000)
+
+
+			function tick(){
+				var g = navigator.getGamepads()
+
+				var gg = g[0]
+
+				if(gg)
+					disp.innerHTML = JSON.stringify(gg,null,'\t')
+				else
+					disp.innerHTML = 'press button on controler'
+
+				
+				window.requestAnimationFrame(tick)
+				}
+
+			tick()
+		</script>
+	</body>
+</html>

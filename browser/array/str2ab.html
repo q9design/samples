@@ -1,0 +1,16 @@
+<script>
+	//var e = new TextEncoder('utf-8')
+	//console.log(e)
+
+	// is there a better way?
+	var s = 'hello.'
+	var b = new Uint8Array(s.length)
+
+	for(var i = 0;i< s.length;i++){
+		var x = s.charCodeAt(i)
+		console.log(s[i],x)
+		b[i] = x
+		}//for
+
+	console.log(s,b)
+</script>

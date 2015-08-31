@@ -1,0 +1,92 @@
+<!doctype>
+<html>
+	<head>
+		<script>
+			// https://developer.mozilla.org/en-US/docs/Web/API/Worker
+			// https://developer.mozilla.org/en-US/docs/Web/Guide/Performance/Using_web_workers
+			// https://developer.mozilla.org/en-US/docs/Web/API/Worker/Functions_and_classes_available_to_workers
+			// http://www.html5rocks.com/en/tutorials/workers/basics/
+			// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/NsIWorkerScope#close()
+			// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/NsIWorkerMessageEvent
+		</script>
+	</head>
+	<body>
+
+		<script id='worker' type="text/js-worker">
+		  // This script WON'T be parsed by JS engines because its mime-type is text/js-worker.
+		  var myVar = "Hello World!";
+		  console.log('hi!')
+			addEventListener('message',function(e){
+				var d = e.data
+				console.log(d instanceof ArrayBuffer)
+				console.log("wkr:"+JSON.stringify(d))
+				for(var i in d)
+					{
+					console.log('wkr:'+i+":"+d[i])
+					}
+				//postMessage(['message from host',e.data])
+				//console.log(['message from host',e.data])
+				})
+			//postMessage('yo.')
+			//self.close()
+
+			console.log('done!')
+		</script>
+
+		<script>
+
+		
+			var b = new Blob([document.querySelector('#worker').textContent],{type:'text/javascript'})
+			var u = URL.createObjectURL(b)
+			var w = new Worker(u)
+			w.addEventListener('message',function(e){
+				var d = e.data
+				for(var i in d)
+					{
+					console.log(i,d[i])
+					}
+				if(d.msg)
+					console.log('it is',d.msg)
+				console.log('message from worker',JSON.stringify(e.data),e)
+				},false)
+
+			var a = new ArrayBuffer(2500000)
+			w.postMessage('hey!')
+			w.postMessage({msg:'start',num:4})
+			w.postMessage({msg:'data',dat:a})
+
+
+			//w.terminate()
+
+			setInterval(function(){
+				var v = Math.round(performance.now())
+				document.body.innerHTML = v
+				document.title = v
+				},15) // see window.requestAnimationFrame()
+
+			setInterval(function(){
+				//w.postMessage('ping')
+				},1500) 
+
+			setInterval(function(){
+				console.log('sending a',performance.now())
+				var a = new ArrayBuffer(25000000)
+				console.log('1-aa',a)
+				w.postMessage({'msg':'a',dat:a})
+				console.log('1-bb',a,a.byteLength)
+				console.log('sent',performance.now())
+				console.log(a instanceof ArrayBuffer,a.byteLength)
+
+			 	// @ SEND BY VALUE
+				console.log('sending b',performance.now())
+				var b = new ArrayBuffer(25000000)
+				console.log('2-aa',b,b.byteLength)
+				w.postMessage({'msg':'b',dat:b},[b]) //data, [array buffers list you'd like to transfer]
+				console.log('2-bb',b)
+				console.log('sent',performance.now())
+				console.log(b instanceof ArrayBuffer,b.byteLength) // ArrayBuffer 0 byteLength
+
+				},50000) 
+		</script>
+	</body>
+</html>

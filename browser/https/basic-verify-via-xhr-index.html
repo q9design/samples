@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<script>
+		// how do other browsers handle the situation?
+
+		var f = new FormData()
+		var x = new XMLHttpRequest()
+		x.open('POST','https://private.domain.org/',true) // assumes header("Access-Control-Allow-Origin: *"); or similar on remote host.
+		x.onload = function(e){ // includes 404
+			var v = this.response
+					}
+		x.onabort = function(e){
+				console.log('abort',this,e)
+				}
+		x.onerror = function(e){
+				console.log('err',this,e) // ERR_INSECURE_RESPONSE 
+				}
+		x.ontimeout = function(e){
+				console.log('timeout',this,e)
+				}
+
+		x.timeout = 15000; // so we'll abort sooner (perhaps we should walk this up on multiple issues?)
+		x.send(f)
+
+		</script>
+	</body>
+</html>

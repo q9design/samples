@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+	<head>
+		<script src='tools.js'></script>
+		<script src='keypair.js'></script>
+		<style>
+			body {padding: 0px; margin: 0px;}
+			.buffering {position: absolute; top: 5px; left: 5px; display: none; background: yellow; border-radius: 5px; color: black; font-weight: bold; z-index: 999; padding: 3px;}
+			video {max-width: 100%;}
+			.container {xbackground: #eee; padding: 5px;}
+			button {display: none;}
+		</style>
+	</head>
+	<body>
+		<div class='container'>
+			<div class='buffering'>Buffering</div>
+		</div>
+		<button>full</button>
+		<script>
+			// http://html5-demos.appspot.com/static/media-source.html
+			// https://developer.mozilla.org/en-US/docs/Web/API/MediaSource
+			// https://dvcs.w3.org/hg/html-media/raw-file/tip/media-source/media-source.html
+			// http://html5-mediasource-api.googlecode.com/svn/tags/0.1/draft-spec/mediasource-draft-spec.html
+			// http://html5-mediasource-api.googlecode.com/svn/tags/0.4/draft-spec/mediasource-draft-spec.html
+			// http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html
+
+			// how to detect buffering?
+			// how to only load what we need? (but if we're caching we'd like to buffer all anyway? unless on limited data plan.)
+			// upg caching
+			//       - browser natual cache should cache packets from the same source [look into 'not modified' process] (how can we tab those without making browser request actually?) .. is that possible?
+			//       - cache to long term specific storage (for offline mode and if can't tap browser natural cache))
+			// upg: local cache md5s :) :)  // first localStorage next web storage key pair
+			// upg: add waiting event / progress event
+			// upg: hmm.. on video media would be nice to have an option of pulling sub sections of chunks (x to y) .. theres already html support for that. (so can quick start)
+			// upg: always return no change tag.
+			// upg: if memory limited.. cache only the first 15 or so chunks of any media file?
+			// upg: on click pause video (.. is there a nice js widget? perhaps we should make a nimble one.)
+			// upg: how about detecting if comming from a browser request? / serve code that will js load the player for the media.. but also content that is the .dsc so programs that load the page can load the dsc themselfs... cool. this way same url will work in stock browser address bar as well as from a player app.
+			// see: MPEG-DASH
+			// see: linux video formatting from command line (is there any js video processing tools?)
+			var dom = document.querySelector('.container')
+			var store = new storageObject()
+			console.log('store',store)
+
+//			var dsc = JSON.parse('{"chunks":191,"map":[{"sn":"0","fid":"md5-fc566e448e754f0d99597c2265b535de","len":1048576},{"sn":"1","fid":"md5-a279b50d0394fbb25119140e6b23c05d","len":1048576},{"sn":"2","fid":"md5-819cb5fa26e84c750ce06476963c94cb","len":1048576},{"sn":"3","fid":"md5-2a0bdc90df4cfa2299f4c4913cc1c9a3","len":1048576},{"sn":"4","fid":"md5-07a22a9eebd00a55a1ffb5f9792cdc62","len":1048576},{"sn":"5","fid":"md5-ebc45ccbbca1db0a05b3e89f6b2e0e8d","len":1048576},{"sn":"6","fid":"md5-1faec038847e7f8b5041f3dc6f55fee2","len":1048576},{"sn":"7","fid":"md5-527d1de2cf9eb720888c39b6985ec1bf","len":1048576},{"sn":"8","fid":"md5-f9afd0e1649339bc9b2f0b748163b3a2","len":1048576},{"sn":"9","fid":"md5-368dd44f222cb7294684ef36847ac99a","len":1048576},{"sn":"10","fid":"md5-e18d871c996fe4764b7dea35ae22ed16","len":1048576},{"sn":"11","fid":"md5-b8c96422da9269bf0adf7d257c4c8740","len":1048576},{"sn":"12","fid":"md5-ca44886340d63b1d3b7edd94bf654c3f","len":1048576},{"sn":"13","fid":"md5-faec425df06e8be8f08cd911a145af27","len":1048576},{"sn":"14","fid":"md5-114ea3f9705f1fcf578424b8b584e485","len":1048576},{"sn":"15","fid":"md5-d9c69fe77d59009180d80b547a793bb7","len":1048576},{"sn":"16","fid":"md5-6aec6858cb51974e4b99b87508937951","len":1048576},{"sn":"17","fid":"md5-295d7aee426d1bc230d455141cca6fcc","len":1048576},{"sn":"18","fid":"md5-b31b0e5bde815eebf5d9cfaaa66228b2","len":1048576},{"sn":"19","fid":"md5-b49ceb9d19bbd726c73a4b6f21740c3f","len":1048576},{"sn":"20","fid":"md5-2b9eb01285d2a13dd9b98927f4bc89a7","len":1048576},{"sn":"21","fid":"md5-973ea039b5b880a4dd037fea71d1b82f","len":1048576},{"sn":"22","fid":"md5-f1c3bfc40e21b1030893eae6395cb2bb","len":1048576},{"sn":"23","fid":"md5-302c5f08fee7f61b4870c3db47ba4082","len":1048576},{"sn":"24","fid":"md5-bf48e77efa9f945006f823a10469dbfe","len":1048576},{"sn":"25","fid":"md5-e8ce34ddcad19bc62d1bd53244711900","len":1048576},{"sn":"26","fid":"md5-3784d231926930156af75cba1a28af01","len":1048576},{"sn":"27","fid":"md5-63f219565e681e119176c01abcd6db28","len":1048576},{"sn":"28","fid":"md5-78def95526fadc22f1bea13e8ba7027f","len":1048576},{"sn":"29","fid":"md5-e10c278ff636b39c82a659c10af7602d","len":1048576},{"sn":"30","fid":"md5-e35a9e9a96536c2a293c1af3c2bb7c21","len":1048576},{"sn":"31","fid":"md5-e543fae9f0bf57ddd6a1fa84cbe6ada2","len":1048576},{"sn":"32","fid":"md5-dd605e212e4e70f900399bbc56c1bb11","len":1048576},{"sn":"33","fid":"md5-35e2ea77259e4957cb661bedb0aea455","len":1048576},{"sn":"34","fid":"md5-f131811ff5221b7c69597286fbed6a37","len":1048576},{"sn":"35","fid":"md5-45daf71eb3de200c4adb1c4c742f956b","len":1048576},{"sn":"36","fid":"md5-3bc66ae00d9e3271c87148db7d0478fb","len":1048576},{"sn":"37","fid":"md5-b523fb510565f159b04aaf963154099a","len":1048576},{"sn":"38","fid":"md5-d357ebdd23ad8e3f84c174db57f220f7","len":1048576},{"sn":"39","fid":"md5-d6bbf252290a3813c4015fc3e4876dd1","len":1048576},{"sn":"40","fid":"md5-66641e444da2b2e7e91fc9c79760b2ca","len":1048576},{"sn":"41","fid":"md5-99c74c99757265b5e9bd7d7a0fb2095f","len":1048576},{"sn":"42","fid":"md5-958ca059924c4adfd8c9fc9fffe5485f","len":1048576},{"sn":"43","fid":"md5-e89e61944af3b267dda2848be3a01420","len":1048576},{"sn":"44","fid":"md5-8412069f984cc3d7c65f4b7bb1cce2a6","len":1048576},{"sn":"45","fid":"md5-a93ca8689906b44dd95b8e07b356a897","len":1048576},{"sn":"46","fid":"md5-daa0a3cefa4faa14178d1b3e5e9d8b1e","len":1048576},{"sn":"47","fid":"md5-fea603c067ace93e1561a0be595c5816","len":1048576},{"sn":"48","fid":"md5-f35f4437bb9dc48a52af651d62dc106f","len":1048576},{"sn":"49","fid":"md5-df03b4b3b24403aead613acd61a37818","len":1048576},{"sn":"50","fid":"md5-479082a45e35aeb2ccdbed92f93d37ff","len":1048576},{"sn":"51","fid":"md5-b11d1f1fabc20063cf0801b5aa7812f7","len":1048576},{"sn":"52","fid":"md5-c4f96d88de5b8f3d481c80091de2dbff","len":1048576},{"sn":"53","fid":"md5-e3085995ee3ca08972b60cace9613642","len":1048576},{"sn":"54","fid":"md5-2f06a952bc56812545e09d27b30a50e0","len":1048576},{"sn":"55","fid":"md5-29799f5ed4f083af142b367e9137ab3a","len":1048576},{"sn":"56","fid":"md5-5a19808bd3d3dc0b427738c52708f1e3","len":1048576},{"sn":"57","fid":"md5-07a4cc951ca976603633283bc51ea4fb","len":1048576},{"sn":"58","fid":"md5-659b3631afeb0f239c10c6d395f3262b","len":1048576},{"sn":"59","fid":"md5-d7bf6e0f0fc20fb81a4f6b0b037c1b82","len":1048576},{"sn":"60","fid":"md5-7b690200e393619b69b4bc90af51a1ab","len":1048576},{"sn":"61","fid":"md5-d7d77e4f83b558f9a751023531dded2f","len":1048576},{"sn":"62","fid":"md5-d622b57cd2eb7348082e389a612fd959","len":1048576},{"sn":"63","fid":"md5-67e3c7fefc04b96e0c388b72d15677e8","len":1048576},{"sn":"64","fid":"md5-7d39253845b1deb85b2395064ee0c4b3","len":1048576},{"sn":"65","fid":"md5-cf37ed06e848fd6411277ed70ae75ae2","len":1048576},{"sn":"66","fid":"md5-728ec988e8ba3c6afafc7fe624f36d76","len":1048576},{"sn":"67","fid":"md5-c3839e1945ba4a71f2b74761553f3645","len":1048576},{"sn":"68","fid":"md5-f53bd5e93dd7ad531b5da39525e9f8f0","len":1048576},{"sn":"69","fid":"md5-71b1eefc30b250fa95fe261679511d17","len":1048576},{"sn":"70","fid":"md5-8767ebbb258151fdcfcd59579115944b","len":1048576},{"sn":"71","fid":"md5-78519ec1d9525b9b36041a437d7a5f18","len":1048576},{"sn":"72","fid":"md5-8c904fb71881092e1e2da204ff213342","len":1048576},{"sn":"73","fid":"md5-3c09e607a020f2071d940539736080a3","len":1048576},{"sn":"74","fid":"md5-b5ed3350c6542f7cfcb2cd889bad0941","len":1048576},{"sn":"75","fid":"md5-316cdd2a7d0355880401a841b32afa16","len":1048576},{"sn":"76","fid":"md5-6d6c02e9021a975717bb4a75c1cbfb81","len":1048576},{"sn":"77","fid":"md5-af3e7a6d300ed5fe2ad95083b031e6b9","len":1048576},{"sn":"78","fid":"md5-9c905f0562d6a247284875f4ef6cfb1b","len":1048576},{"sn":"79","fid":"md5-eed370f37797a1c0a2adb69d96937548","len":1048576},{"sn":"80","fid":"md5-97291f68913a28c79f97a01d7d305272","len":1048576},{"sn":"81","fid":"md5-a426b49733d95636b7054462f70d8f2d","len":1048576},{"sn":"82","fid":"md5-ff81905df2d7724157688e4e1b4d2853","len":1048576},{"sn":"83","fid":"md5-d2ab2b17c5f2864335b5f60b72fb4ad4","len":1048576},{"sn":"84","fid":"md5-238d25c6f7294578badc41d16d30a5fc","len":1048576},{"sn":"85","fid":"md5-d6b59138082f9bca153548acd36c9f2a","len":1048576},{"sn":"86","fid":"md5-45be58561c3caf3cc1be0b99d31ce37b","len":1048576},{"sn":"87","fid":"md5-0df0a00c2eebfcf0c6934e260095c429","len":1048576},{"sn":"88","fid":"md5-041de71c644290f12476da499562baee","len":1048576},{"sn":"89","fid":"md5-9b7ed43998cea20da0c762b4f383d7a2","len":1048576},{"sn":"90","fid":"md5-cd0da85e17cf31f5d1369cb31ff05488","len":1048576},{"sn":"91","fid":"md5-847a7cad516902de9041f996a4c63a2d","len":1048576},{"sn":"92","fid":"md5-4db45b062ce3183d3162095e374a44cb","len":1048576},{"sn":"93","fid":"md5-7dc8e06ff65382d6e731a2770f3dcff2","len":1048576},{"sn":"94","fid":"md5-79fc9032f700a782712a021a99362166","len":1048576},{"sn":"95","fid":"md5-186b5edb9b21ce6dcc1608039a06760d","len":1048576},{"sn":"96","fid":"md5-005739de17b9aaea075604eabcd7be7f","len":1048576},{"sn":"97","fid":"md5-a3a3024bd2a10cb7701997fa51b096bd","len":1048576},{"sn":"98","fid":"md5-1a41f0b285e7b2484a519e78a7d95b6f","len":1048576},{"sn":"99","fid":"md5-bf79194f258f4c42319855272df69680","len":1048576},{"sn":"100","fid":"md5-b72b31680cf4039edfae551a54c301c0","len":1048576},{"sn":"101","fid":"md5-05c7317ac63af5c4aea03d2ff3b50d6b","len":1048576},{"sn":"102","fid":"md5-309f4cca5069ee0716e88dce9f698533","len":1048576},{"sn":"103","fid":"md5-6a88e8280dbba9c7ff205bf3ddce5ba8","len":1048576},{"sn":"104","fid":"md5-a49b238ad38abc0b4cc3fad9324b2438","len":1048576},{"sn":"105","fid":"md5-a61824fbbf45294de0f8694d3b8bfa35","len":1048576},{"sn":"106","fid":"md5-024803844308755771e6780258a70c32","len":1048576},{"sn":"107","fid":"md5-9462e8f57d1c057d7ab082e11af21120","len":1048576},{"sn":"108","fid":"md5-f85b32fb17423a04fa4fa077a1bf42bf","len":1048576},{"sn":"109","fid":"md5-8f287f31180758c1a9eb56a7b220f182","len":1048576},{"sn":"110","fid":"md5-349096453ef797f558dacb7d02cedb69","len":1048576},{"sn":"111","fid":"md5-e4ca7f2efc64bc7b541830bf4eb82b0e","len":1048576},{"sn":"112","fid":"md5-a0708f1693eb9dd5361a51653a334f3b","len":1048576},{"sn":"113","fid":"md5-a38d0f7989010715b811d3cd4ff52590","len":1048576},{"sn":"114","fid":"md5-66daec30e15bc4b5cb6f7e9399bf3ce5","len":1048576},{"sn":"115","fid":"md5-5670d8437e473a77fff7d768c1a400df","len":1048576},{"sn":"116","fid":"md5-4bfc0e811b388f6c94235ba385bad4d5","len":1048576},{"sn":"117","fid":"md5-2cec047ee1c026f3ee5a2f63168ee697","len":1048576},{"sn":"118","fid":"md5-97a5336a7297e9968c500ad3944bc6d0","len":1048576},{"sn":"119","fid":"md5-c17987706d707025d8ab8e84864fa661","len":1048576},{"sn":"120","fid":"md5-7793ccc69a8d5f268ef97b5a38e401b9","len":1048576},{"sn":"121","fid":"md5-6bb8741849dcd4ea48f11125b5318e21","len":1048576},{"sn":"122","fid":"md5-1e28a7f6c56425c4cf6db87623d51513","len":1048576},{"sn":"123","fid":"md5-b74995b64b44e4fac5ed92cd601942db","len":1048576},{"sn":"124","fid":"md5-5ed707de17b3b82407657d9befb45293","len":1048576},{"sn":"125","fid":"md5-1b9f0876edeada240e7ac6b5a2514b43","len":1048576},{"sn":"126","fid":"md5-2f4c4d6feb0dd632033a87a08a503b9e","len":1048576},{"sn":"127","fid":"md5-8dbc0c30406c47b8fc45f611e19f2ace","len":1048576},{"sn":"128","fid":"md5-0ca3b46d22d833131c98baca225a7287","len":1048576},{"sn":"129","fid":"md5-88abc2e7b07f1602eb4fa493e1e6173c","len":1048576},{"sn":"130","fid":"md5-9f64a0ffff9e033996d8dff2146be9aa","len":1048576},{"sn":"131","fid":"md5-9eb863bfd0699d8ba044002d41a7bb59","len":1048576},{"sn":"132","fid":"md5-8421377088b39daf3db9fa28b62d8ef3","len":1048576},{"sn":"133","fid":"md5-42a03a9888ca1d9d2421ff6789a213ef","len":1048576},{"sn":"134","fid":"md5-be6cbbf572e9e5a3a20e7db5490f1566","len":1048576},{"sn":"135","fid":"md5-53598e22a2480bd66b31d85afcda3fa9","len":1048576},{"sn":"136","fid":"md5-264de4b724d6f47790fb7ee4fc642b55","len":1048576},{"sn":"137","fid":"md5-5ef96ac6aa670aa33f4feab55111e7a5","len":1048576},{"sn":"138","fid":"md5-46c5c9faafdf8025048a8b86f1ef1cdf","len":1048576},{"sn":"139","fid":"md5-d63878f324201b7e5ff3ff5909f63c30","len":1048576},{"sn":"140","fid":"md5-60f2f38f5a713f5e8378aa43dbe02b98","len":1048576},{"sn":"141","fid":"md5-d49cb1fdb8bc0def8070f7c559377f63","len":1048576},{"sn":"142","fid":"md5-211e7ccfdff4d6c7d5712203a0d9fe6a","len":1048576},{"sn":"143","fid":"md5-858e8abb152f2ef868c863ce9c0a8a12","len":1048576},{"sn":"144","fid":"md5-cb49f0111515d7ffb4d4b46a29505c36","len":1048576},{"sn":"145","fid":"md5-5f1b0df3af80097edf3e9379dc0b61c8","len":1048576},{"sn":"146","fid":"md5-a4db01ef4dbfac4f7c7668744af4652f","len":1048576},{"sn":"147","fid":"md5-792c27854e81e2b31269608e4e53ed10","len":1048576},{"sn":"148","fid":"md5-cf83c7e45d7dfffc588477573e3fc00b","len":1048576},{"sn":"149","fid":"md5-1c9706e6188831ecccae088efd41c5de","len":1048576},{"sn":"150","fid":"md5-b60b12c173c4bf9f92cc57214edf6b23","len":1048576},{"sn":"151","fid":"md5-300f89777d8b6876e0c11711e72ea1e1","len":1048576},{"sn":"152","fid":"md5-ac97b1a4b5e93c90e994d115f3c41b25","len":1048576},{"sn":"153","fid":"md5-e9c106f10ba258496126b3b9d94a33fe","len":1048576},{"sn":"154","fid":"md5-9f12c23a80cdaad475333269a1bc4dcf","len":1048576},{"sn":"155","fid":"md5-21338a29e077db99012a920d4f783832","len":1048576},{"sn":"156","fid":"md5-f3a2e75405a698289dbb1178a1ad1bf9","len":1048576},{"sn":"157","fid":"md5-153337d7718c139bb41694edce0b0872","len":1048576},{"sn":"158","fid":"md5-8bfd3ca8f0f6adc9fcbd80fc66a76500","len":1048576},{"sn":"159","fid":"md5-5be2425188cea5e7d7ee5d246bc8027b","len":1048576},{"sn":"160","fid":"md5-0a9cd84c384e32f992901b0976937f76","len":1048576},{"sn":"161","fid":"md5-414f096e666c4a7de4c997ed3480c674","len":1048576},{"sn":"162","fid":"md5-99d63404f2ecd45a67afb97230b31e59","len":1048576},{"sn":"163","fid":"md5-d2377329dc2426e5a5f87f8d3f7b2658","len":1048576},{"sn":"164","fid":"md5-25f80f091c42aecb906d4a10b4145ae2","len":1048576},{"sn":"165","fid":"md5-0794b428e176a416b53ce0334bd6d0e2","len":1048576},{"sn":"166","fid":"md5-18f13558cc0e4a1c2ca266bc002d7cd6","len":1048576},{"sn":"167","fid":"md5-686054d451b6a85578d3ea791c951068","len":1048576},{"sn":"168","fid":"md5-6118a6f2af8e83621c7807d2ec213e30","len":1048576},{"sn":"169","fid":"md5-2b2c46f8ca00e8845a0cbc402fe61b98","len":1048576},{"sn":"170","fid":"md5-793dfdd5b08c364342b73388640aed6b","len":1048576},{"sn":"171","fid":"md5-ca120b2322f62566fd627adf484c84e8","len":1048576},{"sn":"172","fid":"md5-8739e4ffb13e60f7270c017333b19cfd","len":1048576},{"sn":"173","fid":"md5-27a00d1c6678ade962bfbbe96c17366b","len":1048576},{"sn":"174","fid":"md5-741120274780bbb785f1dca9d93fcb30","len":1048576},{"sn":"175","fid":"md5-d03e81c0dc53b5ddac4a4c48d0a26879","len":1048576},{"sn":"176","fid":"md5-fbc747bceba14edf96870dd58315c663","len":1048576},{"sn":"177","fid":"md5-a9b083da837fc231ea2a01af76c09856","len":1048576},{"sn":"178","fid":"md5-73a055a724a219dc20962da138f8a13e","len":1048576},{"sn":"179","fid":"md5-f3744530a965f47d274b3d5cfc893fc5","len":1048576},{"sn":"180","fid":"md5-3688105eda93da2f6a171b570dd09c7d","len":1048576},{"sn":"181","fid":"md5-d9586691876538f7699332db0fe442d2","len":1048576},{"sn":"182","fid":"md5-ad5dcf83848091c284225cbb408f20f7","len":1048576},{"sn":"183","fid":"md5-d08372ebb056e29fbfd6ee2f814a755d","len":1048576},{"sn":"184","fid":"md5-6ee617ce4c37532490641807adc7fac4","len":1048576},{"sn":"185","fid":"md5-a0c3d1196ae3c1ca73cc0256cfc66b01","len":1048576},{"sn":"186","fid":"md5-09eed2bc4ee5b292497c4d4d4ee20e4a","len":1048576},{"sn":"187","fid":"md5-b322c29d7b1788891569443329e00318","len":1048576},{"sn":"188","fid":"md5-18c3ef8d716d7634308ab5ea422350a7","len":1048576},{"sn":"189","fid":"md5-9ee08808d49437865ccd5e8d2e4491dd","len":1048576},{"sn":"190","fid":"md5-1f779bd8305ca2cd5b2d0bfcc6b9cc74","len":958573}],"name":"SLOM_0101-The_Vacuum_Cleaner.avi","type":"video/x-msvideo","size":200188013,"date":1405100905,"crypto":{"type":"aes","key":{"0":32,"1":235,"2":240,"3":215,"4":80,"5":179,"6":68,"7":110,"8":6,"9":185,"10":124,"11":254,"12":58,"13":149,"14":70,"15":112},"iv":{"0":183,"1":25,"2":224,"3":196,"4":209,"5":24,"6":80,"7":229,"8":143,"9":109,"10":126,"11":1,"12":249,"13":120,"14":183,"15":176}}}')
+			var dsc = JSON.parse('{"chunks":90,"map":[{"sn":"0","fid":"md5-982311c1be8b40020deb285a73886eec","len":1048576},{"sn":"1","fid":"md5-699bcb292b46c23a592a29a710824a7d","len":1048576},{"sn":"2","fid":"md5-30991b7fe7012fa8504b14d7aeeed40f","len":1048576},{"sn":"3","fid":"md5-f525f60e5fffd1d3dd254392695065cf","len":1048576},{"sn":"4","fid":"md5-217825ecdd6a1c8ebaed158e2df117ec","len":1048576},{"sn":"5","fid":"md5-7f1de0b76e41cd41b1567c80f4aa581b","len":1048576},{"sn":"6","fid":"md5-d208ca4913ea50c3296e1e8425423442","len":1048576},{"sn":"7","fid":"md5-dd67a09fa4e349ddbd20405ea78fd84a","len":1048576},{"sn":"8","fid":"md5-ad1de2ff4d54428178f5b338c447b4b5","len":1048576},{"sn":"9","fid":"md5-824b6226ca64b8aef2c95d8408da588b","len":1048576},{"sn":"10","fid":"md5-edd5d494116d32f0f4c5b573da586033","len":1048576},{"sn":"11","fid":"md5-776c672a5e80f12ba1ca7335010547d8","len":1048576},{"sn":"12","fid":"md5-5626b367ea6c8d3c58198171053f4d7d","len":1048576},{"sn":"13","fid":"md5-84ae27e4e053820ec0d679db638d3a21","len":1048576},{"sn":"14","fid":"md5-63b2c4879105b5604aee71b6282a1037","len":1048576},{"sn":"15","fid":"md5-d63b5519a98371bf17bc228cc92d06f3","len":1048576},{"sn":"16","fid":"md5-1e25b114be171f995f749edefce44419","len":1048576},{"sn":"17","fid":"md5-daf05ecf4728c8e4408222759a04234f","len":1048576},{"sn":"18","fid":"md5-aab6dec56546bb7227d045641186dec6","len":1048576},{"sn":"19","fid":"md5-b3854a67c03cf36348b4acd47a72001a","len":1048576},{"sn":"20","fid":"md5-d9c73282067abd312b182e531212d1f2","len":1048576},{"sn":"21","fid":"md5-d301eb4ca7f9fe96bbd5e2929b3ae1a1","len":1048576},{"sn":"22","fid":"md5-efe8568f30ac6617f31aa46c5bc8332a","len":1048576},{"sn":"23","fid":"md5-d88d8b8a495bad048aec25b0beb3942b","len":1048576},{"sn":"24","fid":"md5-f2b209c04b9d7e78ac3544712d84ebcf","len":1048576},{"sn":"25","fid":"md5-8af010142888262a031baf765f735f0d","len":1048576},{"sn":"26","fid":"md5-daf79709516d32d81cc76a1628f558c0","len":1048576},{"sn":"27","fid":"md5-f10b91beb8cf470929375cb8dbc596d4","len":1048576},{"sn":"28","fid":"md5-92963743178f35aac5148af5bfb32a4d","len":1048576},{"sn":"29","fid":"md5-47117b7ce939c4191703911b9f6d0704","len":1048576},{"sn":"30","fid":"md5-c99bf68cc2573f5c5e35dbd71be88f5c","len":1048576},{"sn":"31","fid":"md5-e4971ae294fbdad9e8a17bb614490494","len":1048576},{"sn":"32","fid":"md5-6edc8eef8c8a69fce7347bc5bc11293c","len":1048576},{"sn":"33","fid":"md5-8c4f338fecf3cfb17d0b1c2bc73ca99a","len":1048576},{"sn":"34","fid":"md5-c8af207885a06202699be230de1bb535","len":1048576},{"sn":"35","fid":"md5-2a9c12aa4a9f321d8191446328882f57","len":1048576},{"sn":"36","fid":"md5-bf289fb34be505c74961cb0b27fc55ae","len":1048576},{"sn":"37","fid":"md5-0d0424556c5b5ce425173c0e43a08c43","len":1048576},{"sn":"38","fid":"md5-9ba34918ba3eaae5221d363f9b8fe20d","len":1048576},{"sn":"39","fid":"md5-d960198552ccb190a4d006b3133d457f","len":1048576},{"sn":"40","fid":"md5-dba946872e5ec0409109d8cacc9647f5","len":1048576},{"sn":"41","fid":"md5-16a0772e650fc1b7b2bfffff074a40e4","len":1048576},{"sn":"42","fid":"md5-1321ba9aa32676874d4667dfcc94d71e","len":1048576},{"sn":"43","fid":"md5-74d10ee51cd96ffbb096e92d705d8d36","len":1048576},{"sn":"44","fid":"md5-e01498164c3dd4ca59b30c8c17935613","len":1048576},{"sn":"45","fid":"md5-32cd827a100d05d6b5c97c3212e328d5","len":1048576},{"sn":"46","fid":"md5-6c05a8a2fbe806a4aa85ccf565a04bd9","len":1048576},{"sn":"47","fid":"md5-e1550a819389b3945bfb612b725e972b","len":1048576},{"sn":"48","fid":"md5-b88762cc9cc6fd5c27eab6a7733d3c9f","len":1048576},{"sn":"49","fid":"md5-81017d514e6879fd86c35e8574ea4037","len":1048576},{"sn":"50","fid":"md5-3dbf39cd21d952774e379417bed4f819","len":1048576},{"sn":"51","fid":"md5-26402ee07c7021dd35f2ac6264b646db","len":1048576},{"sn":"52","fid":"md5-2e0fab6b76a27adca4d75db871a6e434","len":1048576},{"sn":"53","fid":"md5-eda646f329436775ad9850d43192cdb5","len":1048576},{"sn":"54","fid":"md5-d24bc0f8625ba7b4b1dc077eddfebfb5","len":1048576},{"sn":"55","fid":"md5-717757e4b3f6f82590125a81126c0024","len":1048576},{"sn":"56","fid":"md5-99f9d66871bbecff1970cd34b5de3439","len":1048576},{"sn":"57","fid":"md5-14cfd4fc2109c260a84a86f7f8d06be0","len":1048576},{"sn":"58","fid":"md5-2c6e8738a8ec9d77bad9e4f3ed10ef7d","len":1048576},{"sn":"59","fid":"md5-afbcfa277397a09cf5483587d1666e5a","len":1048576},{"sn":"60","fid":"md5-61a1242a38f2913efcac37e59305f3c6","len":1048576},{"sn":"61","fid":"md5-11ee15c76160a129cc3d605f728dded8","len":1048576},{"sn":"62","fid":"md5-65b41c53f9c1c3d003fc86b720ca7ac5","len":1048576},{"sn":"63","fid":"md5-91917e8f010b7263b4fcbfba214ab548","len":1048576},{"sn":"64","fid":"md5-0d51b6a2a2fdf994a473d961730d019f","len":1048576},{"sn":"65","fid":"md5-615284be34660045832921af891c465a","len":1048576},{"sn":"66","fid":"md5-d68b00a1c68af74c340a112d0506cb94","len":1048576},{"sn":"67","fid":"md5-45d75d957ca8dcd6ec8082e64a53ab02","len":1048576},{"sn":"68","fid":"md5-40523eb4013634f739d1e4a7837d2102","len":1048576},{"sn":"69","fid":"md5-d1624020f5b88026e2398be0c0568325","len":1048576},{"sn":"70","fid":"md5-16b4553a7c11053babbbcba6792e6b18","len":1048576},{"sn":"71","fid":"md5-fb81deb42bf4d10f2df9cedfa26a8232","len":1048576},{"sn":"72","fid":"md5-6bbac283d5c7286043689c915deb6d60","len":1048576},{"sn":"73","fid":"md5-7ce0b77488d2868d6d6554dd9479b0b2","len":1048576},{"sn":"74","fid":"md5-3e9b18827639bcf78a1199b304cbf11a","len":1048576},{"sn":"75","fid":"md5-c77c34c285d2d2a65d5b9a93a8f2c9b4","len":1048576},{"sn":"76","fid":"md5-fb2ed61bf4d230701c816bce5b76fb7f","len":1048576},{"sn":"77","fid":"md5-fd2106a426bd80e6c6a18ba014e02576","len":1048576},{"sn":"78","fid":"md5-f8be4d339073a6092c562f1258bc5392","len":1048576},{"sn":"79","fid":"md5-6f6cecff7327350c1bb03ad47181b85d","len":1048576},{"sn":"80","fid":"md5-66747354f2a847fce62df1f38fe9bcf0","len":1048576},{"sn":"81","fid":"md5-becb9cd26218ba32f3d4f8f66b08cfdf","len":1048576},{"sn":"82","fid":"md5-7b7cb091cc9d2d3c65574032ef19d5f0","len":1048576},{"sn":"83","fid":"md5-ff2e92bbdc847044fd5b6d8f002d79f1","len":1048576},{"sn":"84","fid":"md5-3ac07c49be1c273b018960496f2e67bf","len":1048576},{"sn":"85","fid":"md5-a98c4567fd83033af0b806600dcf431c","len":1048576},{"sn":"86","fid":"md5-b17f01aa1ea847be5317029fad18deed","len":1048576},{"sn":"87","fid":"md5-4203596febb23b740057fd2c91f12a02","len":1048576},{"sn":"88","fid":"md5-0cb24b305fa8b7fe55a2c1c0df82a045","len":1048576},{"sn":"89","fid":"md5-376def7fa06a7627dbe2bbc249564a57","len":569195}],"name":"away-in-a-manger-go-tell-it-on-a-mountian.webm","type":"video/webm","size":93892459,"date":1405103102,"crypto":{"type":"aes","key":{"0":182,"1":85,"2":112,"3":166,"4":30,"5":252,"6":253,"7":176,"8":145,"9":205,"10":86,"11":96,"12":193,"13":252,"14":169,"15":58},"iv":{"0":20,"1":110,"2":110,"3":21,"4":116,"5":186,"6":157,"7":58,"8":238,"9":6,"10":133,"11":237,"12":119,"13":25,"14":94,"15":140}}}')
+			console.log('desc',dsc)
+
+			var ms = new MediaSource()
+
+			console.log('media source',ms)
+
+			var v = document.createElement('video')
+			//v.autoplay = true
+			v.controls = true
+			v.src = URL.createObjectURL(ms)
+
+			console.log('%O','video',v)
+
+			v.addEventListener('waiting',function(e){console.log('video waiting',e);},false)
+			v.addEventListener('canplay',function(e){console.log('video can play',e); v.play()},false)
+			v.addEventListener('canplaythrough',function(e){console.log('video can prob play thru (ok to start now)',e);},false)
+			v.addEventListener('stalled',function(e){console.log('video stalled',e);},false)
+			v.addEventListener('suspend',function(e){console.log('video suspend',e);},false)
+			v.addEventListener('loadeddata',function(e){console.log('video some data loaded',e);},false)
+			v.addEventListener('loadedmetadata',function(e){console.log('video metadata ready',e,v.videoWidth,'x',v.videoHeight);},false)
+			v.addEventListener('timeupdate',function(e){console.log('>');},false)
+			v.addEventListener('play',function(e){console.log('[play]');},false)
+			v.addEventListener('pause',function(e){console.log('[pause]');},false)
+/*			var _prev_time = false
+			setInterval(function(){
+				//console.log(v.readyState)
+				console.log(v.currentTime,v.networkState,v.paused)
+				if(_prev_time !== false)
+					{
+					if(v.currentTime == _prev_time)
+						{
+						console.log('buffering') //upg: whats the best way for this?
+						document.querySelector('.buffering').style.display = 'block'
+						}
+					else
+						document.querySelector('.buffering').style.display = 'none'
+					}
+				_prev_time = v.currentTime
+				},500) //buffering if not paused but not moving?
+*/
+			v.addEventListener('progress',function(e){
+				var have = v.buffered.end(0)
+				var at = v.currentTime
+				var margin = have-at
+				if(margin < 1)
+					document.querySelector('.buffering').style.display = 'block'
+				else
+					document.querySelector('.buffering').style.display = 'none'
+
+				//console.log('progress',e)
+					
+				})
+
+			ms.addEventListener('sourceopen',function(e){
+				var b = ms.addSourceBuffer('video/webm; codecs="vorbis,vp8"')
+				//var b = ms.addSourceBuffer('video/mp4; codecs="avc1.42E01E, mp4a.40.2"')
+				console.log('sourceopen',b)
+
+				var i = 0
+				var next = function(){
+					var ii = dsc.map[i]
+					//console.log(ii)
+					var fid = ii.fid
+					var c = store.getItem(fid).
+						then(function(r){
+							//console.log('got item req complete',fid,'=',r)
+							if(!r)
+							return post('http://domain/talk.php',{chunk:fid}).
+								then(function(r){
+									//console.log('loaded',r)
+									console.log('+')
+									return new Promise(function(res,rej){
+										var fr = new FileReader()
+										fr.onload = function(e){
+											var rr = e.target.result
+											store.setItem(fid,rr).then(function(r){
+												//console.log('stored',fid)
+												})
+											res(rr)
+											}//func
+										fr.readAsArrayBuffer(r)
+										})//promise
+
+									}).//then
+								catch(function(e){console.log(e)})
+							else
+								{
+								console.log('!')
+								return r
+								}
+						}).//then
+						then(function(r){
+							console.log('.')
+							//console.log('ready for next',r)
+							b.appendBuffer(r)
+							i++
+							if(i < dsc.chunks) next()
+							})
+
+
+
+					}//func
+
+				next()
+				},false)
+
+		
+			dom.appendChild(v)
+
+			var b = document.body.querySelector('button').addEventListener('click',function(){
+				v.style.width = '100%'
+				dom.webkitRequestFullscreen()
+
+				},false)
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype>
+<html>
+	<head>
+		<script>
+			// http://www.html5rocks.com/en/tutorials/webgl/typed_arrays/
+			// how to know how many threads we can make? (optimzatiion detectors?)
+
+			// arraybuffer worker
+		</script>
+	</head>
+	<body>
+
+		<script id='worker' type="text/js-worker">
+			addEventListener('message',function(e){
+				console.log(performance.now()+' posted')
+				var d = e.data
+				var a = d.dat
+
+				console.log(performance.now()+' to uint8array')
+				var v = new Uint8Array(a)
+				console.log(performance.now()+' converted')
+				var len = v.length
+				console.log('len '+len)
+
+				console.log(performance.now()+' sum '+len)
+				var sum = 0
+				for(var i = 0;i<len;i++){
+					v[i] = i
+					sum += i
+				}
+				console.log(performance.now()+' answer '+sum)
+
+				console.log(performance.now()+' returning anwser')
+				postMessage({sum:sum,dat:a},[a])
+				})
+		</script>
+
+		<script>
+			var code = document.querySelector('#worker').textContent // why this need be out here?
+
+			var go = function(){
+			var start = performance.now()
+			var b = new Blob([code],{type:'text/javascript'})
+			var u = URL.createObjectURL(b)
+			var w = new Worker(u)
+			w.addEventListener('message',function(e){
+				var d = e.data
+				var a = d.dat
+				var v = new Uint8Array(a)
+				console.log('v',v[0],v[1],v[2])
+				console.log(performance.now(),'message from worker:',d)
+				var delta = performance.now()-start
+				console.log('total time:',delta,'ms')
+				},false)
+
+			var size = 756000000
+			console.log(performance.now(),'create buffer',size)
+			var a = new ArrayBuffer(size)
+			console.log(performance.now(),'created')
+
+			console.log(performance.now(),'posting message')
+			//w.postMessage({msg:'data',dat:a})//copy
+			w.postMessage({msg:'data',dat:a},[a])//transfer
+			console.log('array buffer length is now',a.byteLength)
+			}//func
+
+			var c = 3
+			function tick(){
+				if(c  > 0)
+					{
+					console.log(c)
+					c--
+					setTimeout(tick,500)
+					}
+				else
+					{
+					console.log('go!')
+					setTimeout(go,0)
+					}
+				}//func
+
+
+
+			setInterval(function(){
+				var v = Math.round(performance.now())
+				if(c > 0) v+= " - "+c
+				document.body.innerHTML = v
+				document.title = v
+				},15) // see window.requestAnimationFrame()
+
+			tick()
+
+		</script>
+	</body>
+</html>

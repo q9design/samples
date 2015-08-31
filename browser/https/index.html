@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+	<head>
+		<style>
+			body {font: normal 16px arial; padding: 0; margin: 0; padding-top: 35px;}
+			.status {background: #000; padding: 5px; color: yellow; position: absolute; top:0; left:0; right:0; height: 25px; line-height: 25px;}
+			.status a {color: #0F0;}
+		</style>
+	</head>
+	<body>
+		<h1>Hello! Testing for upgrade.</h1>
+		<div class='status'></div>
+		<script>
+		// how do other browsers handle the situation?
+
+
+		function check()
+			{
+			var f = new FormData()
+			var x = new XMLHttpRequest()
+			x.open('POST','https://private.domain.org/',true) // assumes header("Access-Control-Allow-Origin: *"); or similar on remote host.
+			x.onload = function(e){ // includes 404
+				var v = this.response
+				console.log("Looks good",v)
+				var d = document.querySelector('.status')
+				d.style.color = 'green'
+				d.innerHTML = "Ready to visit! <a href='https://private.domain.org/'>https://private.domain.org/</a>"
+						}
+			x.onabort = function(e){
+					console.log('abort',this,e)
+					}
+			x.onerror = function(e){
+					console.log('err',this,e) // ERR_INSECURE_RESPONSE 
+					//is there a way we can tell why? (might be just the server is down at the moment... don't want to send users on a chase.)
+					console.log('Guessing need to install cert etc')
+					var d = document.querySelector('.status')
+					d.innerHTML = 'Install cert to upgrade privacy.'
+					reCheck()
+					}
+			x.ontimeout = function(e){
+					console.log('timeout',this,e)
+					}
+
+			x.timeout = 15000; // so we'll abort sooner (perhaps we should walk this up on multiple issues?)
+			x.send(f)
+
+			}
+
+		var _reCheck = false
+		function reCheck()
+			{
+			if(_reCheck)
+				clearTimeout(_reCheck)
+
+			_reCheck = setTimeout(function(){
+				_reCheck = false
+				check()
+				},5000) //15000?
+			}
+
+		check()
+
+
+		</script>
+	</body>
+</html>

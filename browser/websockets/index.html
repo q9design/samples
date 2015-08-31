@@ -1,0 +1,11 @@
+<script>
+	var ws = new WebSocket('wss://domain:4431')
+	var ee = function(e){console.log(e.type,e)}
+	ws.onopen = function(e){
+			ee(e);
+			ws.send('hi.');
+			}
+	ws.onclose = ee
+	ws.onmessage = ee
+	ws.onerror = ee
+</script>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<script>
+/*
+http://dev.w3.org/html5/webstorage/#threads
+
+4.5 Threads
+
+Because of the use of the storage mutex, multiple browsing contexts will be able to access the local storage areas simultaneously in such a manner that scripts cannot detect any concurrent script execution.
+
+Thus, the length attribute of a Storage object, and the value of the various properties of that object, cannot change while a script is executing, other than in a way that is predictable by the script itself.
+
+>> ssues
+
+The use of the storage mutex to avoid race conditions is currently considered by certain implementors to be too high a performance burden, to the point where allowing data corruption is considered preferable. Alternatives that do not require a user-agent-wide per-origin script lock are eagerly sought after. If reviewers have any suggestions, they are urged to send them to the addresses given in the previous section.
+*/
+			//fires event in all OTHER windows
+			window.addEventListener('storage',function(e){
+				var i = {key:e.key,o:e.oldValue,n:e.newValue,url:e.url}
+				console.log(e,i)
+				// Object {key: "test", o: "0.3774770409800112", n: "0.1050553631503135", url: "http://pacific.q9design.com/q9/lab/browser-platform/webstorage/session-storage.html"}
+				})
+
+			sessionStorage['test'] = Math.random() // triggers no event
+			localStorage['test'] = Math.random() // triggers no event
+		</script>
+	</body>
+</html>

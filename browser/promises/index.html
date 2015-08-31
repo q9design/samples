@@ -1,0 +1,86 @@
+<script>
+
+// 2014.05.23
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+// http://mattgreer.org/articles/promises-in-wicked-detail/
+
+// polyfill: https://github.com/jakearchibald/es6-promise#readme
+
+this.run = function()
+{
+post('talk.php',{}).then(function(d){
+	console.log('ddd',d)
+	return d
+	}).then(function(d){
+		console.log('eee',d)
+		}).catch(function(d){
+			console.log('eeerrr',d)
+			})
+}
+
+///////////////////////
+this.post = function(url,params) // promise version  (upg: include standard cb version url,params,cb)
+{ //note: auto translates a json response
+"use strict"
+
+return new Promise(function(res,rej){ //upg: return with .abort()
+console.log('tt',this)
+	var f = new FormData() //upg: need polyfill
+
+	if(params)
+		{
+		Object.keys(params).forEach(function(t){  // is there an auto way this?
+			var v = params[t]
+			if(typeof(v) != 'string')
+				v = JSON.stringify(v)
+			f.append(t,v)
+			})
+		}//if
+
+	var x = new XMLHttpRequest()
+	x.open('POST',url,true)
+
+	// --
+	x.onload = function(e){ // includes 404
+		if(typeof(this.response) != 'undefined')
+			var v = this.response
+		else
+			var v = this.responseText
+
+		try{ // convert from json if possible
+			var vv = JSON.parse(v)
+		}catch(e){
+			var vv = v
+			console.log('raw:',v)
+			}
+
+		//if(typeof(cb) == 'function') cb(vv)
+		res(vv)
+		if(this.status != 200) // could be 404
+			{
+			console.log('load status',this.status)
+			}
+		}//onload
+
+	// --
+	x.onabort = function(e){
+			//console.log('abort',this,e)
+			rej('abort')
+			}
+	x.onerror = function(e){
+			//console.log('err',this,e)
+			rej('err')
+			}
+	x.ontimeout = function(e){
+			//console.log('timeout',this,e)
+			rej('timeout')
+			}
+
+	x.timeout = 15000; // what's a good default time?
+	x.send(f)
+	})//promise
+}//this.post
+
+run()
+</script>

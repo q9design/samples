@@ -1,0 +1,9 @@
+<title>Audio Lab</title>
+<script>
+	var context = new AudioContext()
+	var o = context.createOscillator()
+
+	o.connect(context.destination)
+	o.start()
+
+</script>

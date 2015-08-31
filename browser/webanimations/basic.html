@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+	<head>
+		<style>
+			body {text-align: center;}
+		</style>
+		<script>
+			// http://updates.html5rocks.com/2014/05/Web-Animations---element-animate-is-now-in-Chrome-36
+			// http://www.polymer-project.org/platform/web-animations.html
+			// http://dev.w3.org/fxtf/web-animations/
+			// http://caniuse.com/web-animation
+		
+		</script>
+	</head>
+	<body>
+		<h1>Hello!</h1>
+		<script>
+			var d = document.querySelector('h1')
+			var p = d.animate(
+				[{fontSize:'1px'},{fontSize:'200px'}],
+				{duration: 1500,	
+				 iterations: Infinity,
+ 				//direction: 'alternate',
+				 //delay: 500 // before starting the loop
+				})
+			p.onfinish = function(e){
+				console.log('finished!')
+				}
+			console.log(p)
+		</script>
+	</body>
+</html>

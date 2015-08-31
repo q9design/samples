@@ -1,0 +1,34 @@
+<body>
+<script>
+        // https://developer.mozilla.org/en-US/docs/Web/API/ArrayBuffer
+        // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data
+
+	var a = new ArrayBuffer(256);
+	var v = new Uint8Array(a);
+
+	var r = new XMLHttpRequest()
+	r.open("POST",'upload.php',true)
+
+	r.onload = function(e){
+		var res =  e.target.responseText
+
+		console.log('e',e)
+		console.log(res) // or response?
+
+		document.body.innerHTML = "<pre>"+res+"</pre>"
+		}
+
+
+	for(i=0; i<v.length; i++){//populate 00 arraybuffer with data
+		v[i] = i % 255;
+	}
+
+	var _a = window.btoa(v);
+console.log('encoded: ',_a);
+
+	//var b = new Blob(['abc123'], {type: 'text/plain'});
+	var b = new Blob([v], {type: 'application/octet-stream'});
+	r.send(b)
+</script>
+</body>
+

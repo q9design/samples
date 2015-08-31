@@ -1,0 +1,88 @@
+<script>
+
+	//
+	// 2014.11.21
+        //
+
+	//http://www.html5rocks.com/en/tutorials/indexeddb/todo/
+	var version = 3 // change this to trigger onupgradeneeded (also inherent when running for first time from version 'null')
+
+	//object store can: add,clear,count,delete,get,put
+
+	function err(e){console.log('e',e)}
+
+	var r = indexedDB.open('lab',version)
+
+	r.onsuccess = function(e){
+		var db = e.target.result
+		console.log('success!')
+		
+		ready(db)
+		}//func
+
+	r.onerror = err
+
+	r.onupgradeneeded = function(e){
+		var db = e.target.result
+		console.log('updated needed')
+		e.target.transaction.onerror = err
+
+		if(db.objectStoreNames.contains('lab')){
+			console.log('resetting db')
+			db.deleteObjectStore('lab')
+			}//if
+
+		var store = db.createObjectStore('lab',{ /// createObjectStore can only happen within onpgradedneeded
+			keyPath: 'timeStamp'
+			})
+		}//func
+
+	function ready(db){
+		console.log('ready',db)
+		var t = db.transaction(['lab'],'readwrite')
+		var s = t.objectStore('lab')  //select the store named 'lab'
+		var r = s.put({ // put also replaces (see add)
+			msg : 'hello!',
+			timeStamp : new Date().getTime()
+			})
+
+		t.oncomplete = function(e){
+			console.log('completed transaction')
+			}
+		t.onerror = err
+
+		print(db,'lab')
+
+		get(db,1416603696903,function(r){
+			console.log('got',r)
+			})
+		}//func
+
+	function get(db,id,cb){	
+		var t = db.transaction('lab','readonly')
+		var s = t.objectStore('lab')
+		var g = s.get(id) // note: type matter : 123 vs '123'
+		g.onsuccess = function(e){ // can 'succeed' if not find item (will be undefined) .. in that case the search process succeeded but nothting was found.
+			var v = e.target.result // undefined if no key match
+			cb(v)
+			}//func
+		}//func
+
+	function print(db,name){
+		var t = db.transaction([name],"readwrite")
+		var s = t.objectStore(name)
+		var kr = IDBKeyRange.lowerBound(0) //0 unixtime (timeStamp key)
+		var cr = s.openCursor(kr)
+		cr.onsuccess = function(e){
+			var r = e.target.result
+			if(r){ // !!r?
+				console.log(r.value,r.key,r.primaryKey)//,r,typeof(r))		
+				r.continue()
+				}//if
+			else
+				console.log('done',r)
+			}//func
+		cr.onerror = err
+		}//func
+
+</script>

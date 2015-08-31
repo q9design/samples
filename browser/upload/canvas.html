@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, user-scalable=yes">
+		<style>
+			html {height: 100%;}
+			body {height: 100%; cursor: pointer; word-wrap: break-word;}
+			input {display:none;}
+		</style>
+	</head>
+	<body>
+		click to upload (file/pic)
+		<input type='file'>
+		<script>
+			//upg: copy pic to canvas (resizes it)
+			//upload result to hde (temp)
+			//generate embedable #j83jf38j39fj3fj398j893
+
+			//next: convert to binary and save to hde.. returning a #mdsc
+			var i = document.querySelector('input')
+			i.addEventListener('change',function(e){
+				console.log('%O',i)
+				var f = i.files[0]
+				var u = URL.createObjectURL(f)
+				console.log(u,f)
+				var img = document.createElement('img')
+				img.src = u
+				img.onload = function(e){
+					console.log('loaded',e,this,this.width,this.height)
+					var w = this.width
+					var h = this.height
+
+					//upg: limit size
+					//if(w>1024) 
+
+					var ww = w
+					var hh = h
+
+					var limitw = 400//1024
+					if(w >= limitw){
+						ww = limitw
+						var s = w/ww
+						hh = Math.round(h/s)
+						}
+
+					//upg: limit h
+
+					//console.log('ww,hh',ww,hh)
+
+					var c = document.createElement('canvas')
+					c.width = ww
+					c.height = hh
+					var cx = c.getContext('2d')
+					cx.drawImage(img,0,0,ww,hh)
+
+					var dat = c.toDataURL('image/jpeg')
+
+					var apxsize = Math.floor(dat.length/1.33)
+
+					document.body.appendChild(c)
+				
+					//upg: could/should convert to binary js side.. then send a binary image upload
+					var p = document.createElement('pre')
+					var t = document.createTextNode(w+','+h+" >> "+ww+','+hh+" -- ("+apxsize+") "+dat)
+					p.appendChild(t)
+					document.body.appendChild(p)
+					
+					}//func
+				//document.body.appendChild(img)
+				})//func
+			document.addEventListener('click',function(e){
+				i.click()
+				})
+		</script>
+	</body>
+</html>

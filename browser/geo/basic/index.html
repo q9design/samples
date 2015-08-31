@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Follow Me</title>
+	</head>
+	<body>
+		<div class='report'></div>
+		<div class='options'>
+			<input id='accuracy-button' type='checkbox' checked> <label for="accuracy-button">Improved Accuracy</label>
+		</div>
+		<script>
+			//
+			// https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation
+			//
+			// http://caniuse.com/geolocation
+			//
+
+			var instance_id = Math.random()
+			var count = 0
+
+			///////////////////////
+			post = function(url,params,cb)
+			{//simple 2014.04.11
+			"use strict"
+			var f = new FormData()
+
+			if(params)
+				{
+				Object.keys(params).forEach(function(t){  // is there an auto way this?
+					var v = params[t]
+					if(typeof(v) != 'string')
+						v = JSON.stringify(v)
+					f.append(t,v)
+					})
+				}
+			var x = new XMLHttpRequest()
+			x.open('POST',url,true)
+			x.onload = function(e){ // includes 404
+					//console.log('onload',this,e)
+					var v = this.response
+					try{ // convert from json if possible (make an edgecase 'raw' version of post if case appaers?)
+						v = JSON.parse(v)
+					}catch(e){}
+					if(cb) cb(v)
+					if(this.status != 200) // could be 404
+						{
+						console.log('load status',this.status)
+						}
+					}
+
+			x.timeout = 15000; // so we'll abort sooner (perhaps we should walk this up on multiple issues?)
+			x.send(f)
+
+			return x
+			}
+		</script>
+
+		<script>
+			//upg: add polyfill
+			var hiacc = document.querySelector('#accuracy-button').checked
+			var opts = {enableHighAccuracy:hiacc}
+			console.log(opts)
+			var h = navigator.geolocation.watchPosition(
+				function(d){
+					count++
+
+					post('talk.php',{instance_id:instance_id,count:count,geo:d},function(d){
+						document.querySelector('.report').innerHTML = "<pre><b>"+count+"</b> "+d.message+"</pre>"
+						console.log('ddd',d)
+						})
+					},
+				function(e){
+				 	document.body.innerHTML = "I'm not able to follow.  Please allow location services.  Thanks!"
+					},
+				opts)
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<script>
+			// http://w3c.github.io/netinfo/ -- android/chromeos only 2014.10.09
+			console.log('nav',navigator,navigator.connection)
+			if ('connection' in navigator) {
+				var c = navigator.connection
+				console.log('conn',c)
+
+				var update = function(){
+					console.log('con type',c.type)
+					console.log('con downlinkMax',c.downlinkMax)
+					}
+				c.ontypechange = update
+				update()
+				}//if
+			else
+				console.log('connection not found in navigator')
+		</script>
+	</body>
+</html>

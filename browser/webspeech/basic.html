@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+	<head>
+		<script>
+		// 2014.09.19 -- basic
+		// http://caniuse.com/#feat=web-speech
+		// https://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html
+		// http://updates.html5rocks.com/2013/01/Voice-Driven-Web-Apps-Introduction-to-the-Web-Speech-API
+		</script>
+	</head>
+	<body>
+		<script>
+		function event(e){
+			//console.log('event',e)
+			console.log(e.type)		
+			}//event
+
+
+		function result(e){
+			var rs = e.results
+			console.log(rs.length)
+			for(var i=0;i<rs.length;i++){
+				var v = rs[i]
+				var final = v.isFinal
+				for(var ii=0;ii<v.length;ii++){
+					var vv = v[ii]
+					var c = vv.confidence
+					var t = vv.transcript
+					console.log(t,final,c)
+					}//for
+				}//for		
+			}//func
+
+  var recognition = new webkitSpeechRecognition();
+  recognition.continuous = false;//true;
+  recognition.interimResults = false//true;
+
+
+	// event methods
+	recognition.onaudiostart = event;
+	recognition.onsoundstart = event;
+	recognition.onspeechstart = event;
+	recognition.onspeechend = event;
+	recognition.onsoundend = event;
+	recognition.onaudioend = event;
+	recognition.onresult = result;
+	recognition.onnomatch = event;
+	recognition.onerror = event;
+	recognition.onstart = event;
+	recognition.onend = event;
+
+ recognition.start()
+		</script>
+	</body>
+</html>

@@ -1,0 +1,33 @@
+<title>Audio Lab</title>
+<script>
+	var context = new AudioContext()
+
+	var g = context.createGain()
+	g.connect(context.destination)
+
+	g.gain.value = 1.0
+	
+
+	var last = false
+	function tick(){
+		var now = context.currentTime
+		if(!last){
+			last = now
+			}
+
+		var o = context.createOscillator()
+		o.type = 'sine'//'square'//'sine'
+		o.frequency.value=440*3
+		o.connect(g)
+	
+		last = last+5
+		o.start(last)
+		o.stop(last+1)
+
+		var delta = last-now
+		// console.log(last,delta,now)
+		setTimeout(tick,5000)
+		}//func
+
+	tick()
+</script>

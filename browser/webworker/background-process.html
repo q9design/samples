@@ -1,0 +1,77 @@
+<!doctype>
+<html>
+	<head>
+		<style>
+			.counter {font:normal 10px arial; position: absolute; bottom: 0px; right: 0px;margin: 5px;}
+		</style>
+		<script>
+			// worker file reader
+			// var wr = WorkerFileReader()
+			// wr.readAsArrayBuffer(f).then(){}
+			//
+
+			// ? is async good by itself for file loading? .. it runs in the BG anyway?
+			// ? how to load really large file > 1GB ? -- will they load outside of a thread?
+		</script>
+	</head>
+	<body>
+		<input type='file' multiple='multiple'>
+		<div class='counter'></div>
+
+		<script id='worker' type="text/js-worker">
+			onmessage = function(e){
+				var f = e.data
+
+				console.log('work ready '+JSON.stringify(f))
+				var r = new FileReaderSync()
+				var a = r.readAsArrayBuffer(f)
+
+				console.log('work complete '+JSON.stringify(a))
+				postMessage(a,[a])
+				}
+		</script>
+
+		<script>
+			var b = new Blob([document.querySelector('#worker').textContent],{type:'text/javascript'})
+			var u = URL.createObjectURL(b)
+//			var wl = []
+//			wl.push(new Worker(u))
+//			wl.push(new Worker(u))
+//			wl.push(new Worker(u))
+
+			var id = document.querySelector('input')
+			id.onchange = function(e){ //upg: perhaps should start thread.. use thread close thread?
+				var fl = this.files  //upg: multiple processes
+				var f = fl[0]
+
+				var w = new Worker(u)  // upg: make a limit and queue up requests?
+				w.onerror = function(e){console.log('ee',e)}
+
+				var p = new Promise(function(res,rej){
+					w.addEventListener('message',function(e){
+						var d = e.data
+						res(d)
+						w.terminate()
+						})
+
+					w.postMessage(f)
+					}).then(function(r){
+						console.log('rrr',r,r.byteLength,f)
+						})
+				}//func
+
+			id.onclick = function(e){e.stopPropagation()}
+
+			document.body.onclick = function(e){
+				document.querySelector('input').click()
+				}
+
+
+			setInterval(function(){
+				var v = Math.round(performance.now())
+				document.querySelector('.counter').innerHTML = v
+				},15) // see window.requestAnimationFrame()
+		</script>
+
+	</body>
+</html>

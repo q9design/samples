@@ -1,0 +1,117 @@
+<title>Audio Lab</title>
+<div class='status'></div>
+<canvas width=400 height=200></canvas>
+<script>
+
+	navigator.getUserMedia = ( navigator.getUserMedia ||
+		               		navigator.webkitGetUserMedia ||
+		               		navigator.mozGetUserMedia ||
+		               		navigator.msGetUserMedia);
+
+	var period = 5
+	var sr = 44100
+	var acc = new Float32Array(sr*5)
+	var index = 0
+
+	var context = new AudioContext()
+
+	var dStatus = document.querySelector('.status')
+
+	var dCanvas = document.querySelector('canvas')
+	var canvas_context = dCanvas.getContext('2d')
+
+	console.log(canvas_context)
+
+	navigator.getUserMedia(
+		{audio:true},
+		function(s){
+			var ss = context.createMediaStreamSource(s)
+			//var a = context.createAnalyser()
+			//ss.connect(a)
+
+			var p = context.createScriptProcessor() // depreicating see.. //var w = context.createAudioWorker('woker.js')
+			p.onaudioprocess = function(e){
+				//console.log(e)
+				var t = e.playbackTime
+				var b = e.inputBuffer
+				var d = b.getChannelData(0)
+				//p.onaudioprocess = false
+
+				for(var i = 0;i<d.length;i++){  // is there a op to do this?
+					var ii = (i+index)%acc.length
+					acc[ii] += d[i]
+					}//for
+
+				index = index+d.length
+
+				dStatus.innerHTML = index
+			
+				}//func
+
+
+
+			ss.connect(p)
+
+
+			p.connect(context.destination)
+
+
+
+			setInterval(function(){
+				//console.log(a)
+				},5000)
+			},
+		function(e){console.log('err',e)}
+		)
+
+
+	function draw(){
+		var ctx = canvas_context
+		var w = dCanvas.width
+		var h = dCanvas.height
+		var hc = h/2
+		var cc = Math.floor(index/acc.length)
+		if(cc == 0) cc = 1
+
+		ctx.fillStyle = '#000000'
+
+		ctx.fillRect(0,0,w,h)
+
+		ctx.fillStyle = 'yellow'
+		ctx.fillRect(0,(h/2)-0.5,w,1)
+
+
+		ctx.beginPath()
+		ctx.moveTo(0,hc)
+
+		var pl = []
+		for(var i = 0;i<w;i++){
+			var ix = (i/w)*acc.length //upg: could calc inc per and add
+			var v = (acc[ix]/cc)
+			var x = i
+			var y = (v+1)*(h/2)
+			ctx.lineTo(x,y)
+			pl.push([x,y])
+			}//for
+
+		ctx.strokeStyle = 'red'
+		ctx.stroke()
+
+		ctx.fillStyle = 'green'
+		for(var i = 0;i<pl.length;i++){
+			var p = pl[i]
+			var x = p[0]
+			var y = p[1]
+			ctx.fillRect(x,y,1,1)
+			}//for
+
+		console.log(cc,acc[0])
+
+		//window.requestAnimationFrame(draw)
+		setTimeout(draw,500)
+		}//func
+
+
+	draw()
+
+</script>

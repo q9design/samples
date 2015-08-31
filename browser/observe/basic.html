@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+	<head>
+		<script>
+			//
+			// http://wiki.ecmascript.org/doku.php?id=harmony:observe#solution
+			//
+			// Object.observe allows for the direct observation of changes to ECMAScript objects.
+			// It allows an observer to receive a time-ordered sequence of change records which 
+			// describe the set of changes which took place to the set of observed objects.
+			//
+			// http://www.html5rocks.com/en/tutorials/es7/observe/
+			// http://amasad.me/2014/03/16/why-im-excited-about-objectobserve
+			// http://wiki.ecmascript.org/doku.php?id=harmony:observe
+			//
+			// see also mutationObserver -- similar thing for changes to DOM.
+			//
+		</script>
+	</head>
+	<body>
+		<script>
+
+			// BASICS /////////////////////////
+
+			var o = {}
+			
+			Object.observe(o,function(c){
+				c.forEach(function(c){
+					console.log(c)
+					})
+				})
+
+			// type : add/update/delete
+			// object : the object you asked to observe originally
+			// name: the prop that changed
+			// oldValue: what it was before
+
+
+			o.a = 1    // Object {type: "add", object: Object, name: "a"}
+ 			o.a = 2    // Object {type: "update", object: Object, name: "a", oldValue: 1}
+ 			o.a = o.a  // -- no report --
+
+			delete o.a // Object {type: "delete", object: Object, name: "a", oldValue: 2}
+			delete o   // -- no report --
+
+			////////////////////////////////////
+
+
+			o = {}
+			o.b = 1
+			Object.observe(o,function(c){
+				c.forEach(function(c){
+					console.log(c)
+					})//foreach
+				})//func
+
+			o.a = {type:'hello',  // Object {type: "add", object: Object, name: "a"}
+			       val:5}
+
+			o.a.val = 6           // -- no report --
+
+			console.log(o)
+
+
+			//var orgCB = function(c){c.forEach(function(c){})}
+			//Object.observe(o,orgCB,['delete']) // only delete events within objects
+			
+			//Object.unobserve(o,orgCB)
+ 		</script>
+	</body>
+</html>

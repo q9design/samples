@@ -1,0 +1,240 @@
+<!doctype>
+<html>
+	<head>
+	</head>
+	<body>
+		<script>
+			function comcom(url)
+				{
+				//
+				// 2014.03.09
+				//
+
+				//
+				//	var c = new comcom()
+				//
+				//	c.listen('a',function(d){console.log('msg',d)})
+				//	c.connect()
+				//
+				//	c.send('a','hi');
+				//
+
+
+				// next: php side.
+
+				// upg: generate good unique sessionid
+
+				// upg: handle drops in connection. // navigator.onLine ?? and event?
+				//        - ethernet cable .onLine
+				//        - wifi .. .onLine
+				//        - bad networking/upstream (cable box) .. xhr timeout
+				// 	  - 404 .. need to set own timeout and relisten 5secs.
+				//
+				//   c.watchConnection(function(c){}) .. call true on connected call false on loss "connection"
+				//   c.connected() TRUE/FALSE .. logical connect
+				//
+				//   (simple set connected on a successful post.. set unconnected on failed post)
+
+				// upg: resend messages on missing ack (after 1,2,3,5 second?) .. and/or restart resend count after connection restored.  (perhaps allow option for resend option, count, time)
+
+				// review for understanding...
+
+				"use strict"
+				var outqueue = []
+				var outlog = {}
+				var inlog = {}
+				var listeners = {}
+				var started = false
+				var msgid = 0
+				var sessionid = Math.random() //perhaps from post? cmd=sessionid?
+
+				var _send = []
+				this.send = function(chan,msg)
+					{
+					msgid++
+					outlog[msgid] = {id:msgid,chan:chan,msg:msg}
+					queue({type:'msg',id:msgid,chan:chan,msg:msg})
+					}
+
+				this.listen = function(chan,cb)
+					{
+					if(typeof(listeners[chan]) == 'undefined')
+						listeners[chan] = []
+
+					listeners[chan].push(cb)
+					}
+
+				this.connect = function()
+					{
+				  	if(!started)
+						{
+						started = true
+						listen()
+						}//!started
+					}
+
+				var queue = function(msg)
+					{
+					outqueue.push(msg)
+					if(started && _send.length == 0)
+						listen() // interupt and send queue
+					}
+
+				var notify = function(chan,msg)
+					{
+					if(typeof(listeners[chan]) != 'undefined')
+						{
+						listeners[chan].forEach(function(v){
+							if(typeof(v) == 'function')
+								v(msg)
+							})
+						}//listners
+					}//notify
+
+				var _post
+				var listen = function()
+					{
+					//process online
+					//var online = navigator.onLine
+					//console.log('ooo',navigator.onLine,typeof(navigator.onLine))
+					if((typeof(navigator.onLine) != 'undefined') && (!navigator.onLine))
+						{
+						//console.log('waiting for system to come online')
+						setTimeout(listen,1000)
+						}
+					else
+						_listen()
+					}
+
+				var _listen = function()
+					{
+					if(_post)
+						{
+						console.log('pardon me.  interrupt..')
+						_post.abort() 
+						}
+
+					var params = {}
+					_send = _send.concat(outqueue)
+					outqueue = []
+
+					params = {sessionid:sessionid,packets:_send}
+					 
+					_post = post(url,{data:params},function(d){ //upg: handle error on load (promise?)
+//						console.log('ddd a',d)
+						d = JSON.parse(d) //try/catch (or promse json_parse?)
+//						console.log('ddddd',d)
+						if(d)
+							{
+							//process packets
+							d.forEach(function(v){
+								if(v.type == 'ack')
+									{
+									if(outlog[v.id])
+										outlog[v.id].urecv = v.urecv // remote got our message  upg: .onAck('chan',function(id){}) // or similar method to listen to ack values. (timestamp prob?)
+									}
+								else
+								if(v.type == 'msg') // incomming message
+									{
+									if(!inlog[v.id]) // new to us message
+										{
+										notify(v.chan,v)
+										inlog[v.id] = {chan:v.chan,msg:v.msg,ackcount:0} //upg: timestamp?
+										}//!inack
+
+								
+									inlog[v.id].ackcount++
+
+									if(inlog[v.id].ackcount <= 5) //not too many re-acks (or complex: put on an ack timeout timer 1 per second)
+										queue({type:'ack',id:v.id}) // notify remote we got their message
+
+								
+									}//msg
+								})//forEach
+
+							_send = [] // upg: only on ack remove from send
+							}//if:d
+
+						_post = false
+
+						//console.log(outlog,inlog)
+						//setTimeout(listen,30000) //safety time out
+						listen()
+						//console.log('------------------------------------------')
+						})//post
+					}//listen
+
+				//init
+				if(!url)
+					url = 'comet.php';
+				
+				}//comcom
+
+
+			// MAIN //////////////////////////////////////////////////////
+			(function(){
+				"use strict"
+
+				var c = new comcom()
+				
+				c.listen('a',function(d){console.log('msg',d)})
+				c.send('a','hi');
+				c.connect()
+
+
+
+
+				//setInterval(function(){c.send('a','hi again')},7000)
+				//setInterval(function(){console.log('o',navigator.onLine)},1000)
+			
+			})()
+			/////////////////////////////////////////////////////////////
+
+
+
+			///////////////////////
+			function post(url,params,cb,ercb)
+			{//upgade to promise (does it already have a promise mode?)
+			"use strict"
+			var f = new FormData()
+
+			if(params)
+				{
+				Object.keys(params).forEach(function(t){  // is there an auto way this?
+					var v = params[t]
+					if(typeof(v) != 'string')
+						v = JSON.stringify(v)
+					f.append(t,v)
+					})
+				}
+			var x = new XMLHttpRequest()
+			x.open('POST',url,true)
+			x.onload = function(e){ // includes 404
+					//console.log('onload',this,e)
+					var v = this.response
+					if(cb) cb(v)
+					if(this.status != 200) // could be 404
+						{
+						console.log('load status',this.status)
+						}
+					}
+			x.onabort = function(e){
+					console.log('abort',this,e)
+					}
+			x.onerror = function(e){
+					console.log('err',this,e)
+					if(cb) cb(false) //??
+					}
+			x.ontimeout = function(e){
+					console.log('timeout',this,e)
+					if(cb) cb(false) //??
+					}
+
+			x.timeout = 5000; // so we'll abort sooner (perhaps we should walk this up on multiple issues?)
+			x.send(f)
+
+			return x
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype>
+<html>
+	<head>
+		<script>
+			// https://developer.mozilla.org/en-US/docs/Web/API/Worker
+			// https://developer.mozilla.org/en-US/docs/Web/Guide/Performance/Using_web_workers
+			// https://developer.mozilla.org/en-US/docs/Web/API/Worker/Functions_and_classes_available_to_workers
+			// http://www.html5rocks.com/en/tutorials/workers/basics/
+			// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/NsIWorkerScope#close()
+			// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/NsIWorkerMessageEvent
+		</script>
+	</head>
+	<body>
+
+		<script id='worker' type="text/js-worker">
+			addEventListener('message',function(e){
+				var d = e.data
+				//console.log("wkr:"+JSON.stringify(d))
+
+				//print_r
+				console.log('worker data')
+				for(var i in d)
+					{
+					var v = d[i]
+					console.log('  '+i+": "+v+" "+typeof(v))
+					}
+				})
+		</script>
+
+		<script>
+			var b = new Blob([document.querySelector('#worker').textContent],{type:'text/javascript'})
+			var u = URL.createObjectURL(b)
+			var w = new Worker(u)
+			w.addEventListener('message',function(e){
+				var d = e.data
+				console.log('message from worker:',d)
+				},false)
+
+			var a = new ArrayBuffer(2500000)
+			w.postMessage({msg:'data',dat:a})
+
+			setInterval(function(){
+				var v = Math.round(performance.now())
+				document.body.innerHTML = v
+				document.title = v
+				},15) // see window.requestAnimationFrame()
+
+		</script>
+	</body>
+</html>

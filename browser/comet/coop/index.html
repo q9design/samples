@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<script>
+		
+			//next: rebuild with this approach.
+			//      add promise based post?
+			//      add unique id 0-65535 sessions?) .. and/or make generate good random from time/state 
+
+
+
+//
+//			var c = new com()
+//
+//			c.listen('a',function(m){
+//				console.log('message from a',m)
+//				})
+//
+//			c.send('a',5)
+//
+//			c.connect()	
+//
+
+
+
+			//upg: timeout for message retries (perhaps a callback for on fail?)
+			// use promises for send/recv?
+
+			//next: client side componant objects.
+
+			//upg: client and service side message acks.
+		
+
+
+			function com()
+			{
+				"use strict"
+
+				var connected = false //logical connection (may toggle on and off in reality)
+				var _listen = {}
+				var _send = {}
+				var _recvlist = []
+				var _recvack = []
+				var instanceid = Math.random().toString().split('.')[1]; //upg: pull from server unique 0-65536 inc.
+//				console.log('new com',instanceid)
+		
+				this.listen = function(id,cb){
+					if(typeof(_listen[id]) == 'undefined')
+						_listen[id] = []
+					_listen[id].push(cb)					
+//					console.log('register',id,_listen)
+					}//listen
+
+
+				var _post = false
+				var _sending = false
+				var _sendbacklog = {}
+				this.send = function(id,msg){
+					var q = _send
+					if(_post)
+						q = _sendbacklog
+
+					if(typeof(q[id]) == 'undefined')
+						q[id] = []
+					q[id].push(msg)					
+
+					if(connected && !_sending)
+						{
+//						console.log('force send')
+						listen() // force imeadate send
+						}//!sending
+					}//send
+
+				this.connect = function(){
+					connected = true
+					listen()
+					}
+
+
+				var listen = function()
+					{//upg: need to provide ack for recvs.?
+					if(_post) _post.abort()
+
+					_sending = (Object.keys(_send).length > 0)
+//					console.log('prepost insending',_sending,JSON.stringify(_send))
+					var data = JSON.stringify({instanceid:instanceid,sending:_send,recvack:_recvack})
+					_post = post('comet.php',{data:data},function(r){
+						_post = false
+						_sending = false
+						_recvack = []
+
+						r = JSON.parse(r)
+//						console.log('rrrr',r)
+
+						_send = JSON.parse(JSON.stringify(_sendbacklog))
+						_sendbacklog = {}
+
+						Object.keys(r.messages).forEach(function(t){  // is there an auto way this?
+							var v = r.messages[t]
+							v.forEach(function(vv){
+//								console.log(vv)
+								var id = vv.id
+								var msg = vv.msg
+								if(_recvlist.indexOf(id) < 0)
+									{
+									tell(t,msg)
+									_recvlist.push(id)
+									}
+								else
+//									console.log('duplicate message',id,msg)
+									
+								_recvack.push(id)
+
+								})
+							})
+
+						listen()
+						})//post
+
+					}//listen
+
+				var tell = function(id,data)
+					{
+//					console.log('tell all',id,data)
+					if(_listen[id])
+						{
+						_listen[id].forEach(function(cb){
+							if(typeof(cb) == 'function')
+								cb(data)
+							})
+						}
+					}
+
+				//fetch unique local id
+				
+			}//func
+
+//			ccgroup.listen('a',function(m){}) // one message at a time?
+//			ccgroup.setState('a',{})
+//			ccgroup.send('a',{},function(r){})??
+//			should the backend keep all states? (maybe probiblly?) .. and we just send instance id (and cookies by natrual)
+
+			function post(url,params,cb)
+			{//upgade to promise (does it already have a promise mode?)
+			"use strict"
+			var f = new FormData()
+
+			if(params)
+				{
+				Object.keys(params).forEach(function(t){  // is there an auto way this?
+					var v = params[t]
+					f.append(t,v)
+					})
+				}
+			var x = new XMLHttpRequest()
+			x.open('POST',url,true)
+			x.onload = function(e){
+					var v = this.response
+					if(cb) cb(v)
+					}
+			x.send(f)
+
+			return x
+			}
+
+
+			//after all dom.
+			(function(){ //use strict wrapper
+			"use strict"
+
+			// http://thanpol.as/javascript/you-dont-need-dom-ready/
+
+//			var states = {a:15,b:30}
+
+//			post('comet.php',{data:JSON.stringify(states)},function(r){console.log('rrr',r)})
+
+			var c = new com()
+//			console.log('ccc',c)
+
+			c.listen('a',function(m){
+				console.log('message from a',m)
+				})
+
+
+			//c.send('a',5)
+			//c.send('b',25)
+			
+			c.connect()	
+			})();
+		</script>
+
+	</body>
+</html>

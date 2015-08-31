@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Follow Me</title>
+		<meta name='viewport' content='width=device-width, user-scalable=no'>
+	</head>
+	<body>
+		<div class='report'></div>
+		<div class='options'>
+			<input id='accuracy-button' type='checkbox' checked> <label for="accuracy-button">Improved Accuracy</label>
+		</div>
+		<script src='include.js'></script>
+		<script>
+			//
+			// https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation
+			//
+			// http://caniuse.com/geolocation
+			//
+
+			//upg: add polyfill
+
+			// next: send to geo tracker like bb does (so can have 'guest' (by cookie/map) trackers without installing bb.)
+
+			include('tools',function(tools){
+				var instance_id = Math.random()
+				var count = 0
+				var last_pos = false
+
+				var aCheckBox = document.querySelector('#accuracy-button')
+			
+			 	var tick = function()
+					{
+					tools.post('talk.php',{instance_id:instance_id,ping:((new Date()).getTime())/1000},function(){
+						setTimeout(function(){
+							tick()
+							},1000*60)
+						})
+					}//tick
+
+
+				var _watch
+				var watch = function()
+					{
+					if(_watch)
+						navigator.geolocation.clearWatch(_watch)
+
+					var hiacc = aCheckBox.checked
+					var opts = {enableHighAccuracy:hiacc}
+					console.log(opts)
+					_watch = navigator.geolocation.watchPosition(
+						function(d){ //upg: ff not like stringify pos object? .. can we make function to easy make copy of all the regular properties?)
+							var geo = {
+								accuracy : d.coords.accuracy,
+								altitude : d.coords.altitude,
+								altitudeAccuracy : d.coords.altitudeAccuracy,
+								heading : d.coords.heading,
+								latitude : d.coords.latitude,
+								longitude : d.coords.longitude,
+								speed : d.coords.speed}
+							var mm = {coords : geo,
+								 timestamp : d.timestamp}
+							
+							count++
+							last_pos = d
+
+							//post it
+							tools.post('talk.php',{instance_id:instance_id,count:count,geo:mm},function(d){
+								document.querySelector('.report').innerHTML = "<pre><b>"+count+"</b> "+d.message+"</pre>"
+								console.log('ddd',d)
+								})
+							},
+						function(e){
+						 	document.body.innerHTML = "I'm not able to follow.  Please allow location services.  Thanks!"
+							},
+						opts)
+
+					}//watch
+
+
+				// init .................
+				aCheckBox.addEventListener('click',function(d){
+					watch() // restart watch with new options.
+					})
+				tick()
+				watch()
+					})
+			</script>
+	</body>
+</html>

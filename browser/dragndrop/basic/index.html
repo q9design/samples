@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+	<head>
+		<style>
+			html {height: 100%;}
+			body {height: 100%;}
+			.drop-here {min-height: 250px; background: yellow;}
+		</style>
+	</head>
+	<body>
+		<div class='drop-here'></div>
+		Drop File and check console.log
+		<script>
+		// http://www.thebuzzmedia.com/html5-drag-and-drop-and-file-api-tutorial/
+		// https://developer.mozilla.org/en-US/docs/DragDrop/Drag_Operations#drop
+
+		//upgrade: click to invoke multi file select box.
+		//reivew browser support/poly fill. (seems to work chrome and ff)
+
+//		var d = document.querySelector('.drop-here')
+		var d = document.querySelector('body')
+
+		//need to support these for browser security
+		d.addEventListener('dragenter',function(e){console.log('dragenter');e.stopPropagation();e.preventDefault();})
+		d.addEventListener('dragexit',function(e){console.log('dragexit');e.stopPropagation();e.preventDefault();})
+		d.addEventListener('dragover',function(e){console.log('dragover');e.stopPropagation();e.preventDefault();})
+
+		d.addEventListener('drop',function(e){
+			e.stopPropagation();
+			e.preventDefault();
+
+			console.log('drop',e); //mouse event
+			var f = e.dataTransfer.files
+			console.log(f,typeof(f))
+
+			for(var i = 0;i<f.length;i++)
+				{
+				var ff = f[i]
+				var name = ff.name
+				var size = ff.size
+				var type = ff.type
+				var r = new FileReader()
+				r.onload = function(d){ // we'll be here when task is complete.
+					var val = d.target.result //text data.
+					console.log('ddd',name,size,type,val)
+					}
+				r.readAsText(ff) //initate background task (upg: handle errors.. perhaps create a promise version?)
+				}//for
+			})//drop
+/*
+
+0: File
+lastModifiedDate: Fri Jun 13 2014 16:11:13 GMT-0500 (CDT)
+name: "playbox.csv"
+size: 768
+type: "text/csv"
+webkitRelativePath: ""
+
+*/
+
+//		d.ondragover = function () { this.className = 'hover'; return false; };
+//		d.ondragend = function () { this.className = ''; return false; };
+//		d.ondragover = function () { console.log('dragover')};
+//		d.ondragend = function () { console.log('dragend')};
+
+		</script>
+	</body>
+</html>
+

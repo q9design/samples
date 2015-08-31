@@ -1,0 +1,135 @@
+<title>indexing - IndexedDB</title>
+<script>
+	console.log('www',indexedDB)
+
+	var x = parseInt(localStorage['x']) || 1
+	//localStorage['x'] = (x+=1)
+	console.log('version',x)
+	var r = indexedDB.open('testdb',x)
+	console.log(r)
+
+	r.onblocked = function(e){console.log('blocked')} // another tab is using the old db.
+
+	r.onerror = function(e){console.log('e',e,e.target.error.name,':',e.target.error.message)}
+
+	r.onsuccess = function(e){
+		var rr = e.target
+		var db = rr.result
+
+		//up and running here
+		console.log('ready')//,db)
+
+		db.onversionchange = function(e){ // perhaps from another tab
+			console.log('version change',e)
+			db.close() //close here so the other can rebuild
+			//fire off init of page.
+			}
+
+		var t = db.transaction("customers","readwrite")
+
+		//t.oncomplete = function(){console.log('c')}
+		//t.onerror = function(){console.log('e')}
+
+		var s = t.objectStore('customers')
+		var rq = s.add({name:'bob',color:'green',udate:Date.now()})
+		//rq.onsuccess = function(){console.log('s')}
+
+		var rq = s.get(3)
+		rq.onsuccess = function(e){
+			var d = e.target.result
+			if(d){
+				console.log('ss',e,d)
+				d.age = Date.now()/10000
+				//d.udate = 1421918597708
+				s.put(d)
+				//select()
+				//walk()
+				rwalk()
+				}//if
+			}//func
+		rq.onerror = function(e){
+			console.log('ee',e)
+			}//func
+
+/*		
+		var rq = s.get(4)
+		rq.onsuccess = function(e){
+			console.log('ss',e,e.target.result)
+			}//func
+		rq.onerror = function(e){
+			console.log('ee',e)
+			}//func
+*/
+
+
+
+		function select(){
+			console.log('select')
+			var t = db.transaction('customers')
+			var s = t.objectStore('customers')
+			var i = s.index('color')
+			var c = i.openCursor(IDBKeyRange.only('red'))
+			c.onsuccess = function(e){
+				var cc = e.target.result
+				if(cc) {
+					console.log(cc.value)
+					cc.continue()
+					}
+				}//func
+			}//func
+
+
+		function rwalk(){
+			console.log('rwalk')
+			var t = db.transaction('customers')
+			var s = t.objectStore('customers')
+			var i = s.index('udate')
+			var c = i.openCursor(null,'prev')
+			c.onsuccess = function(e){
+				var cc = e.target.result
+				if(cc) {
+					console.log(cc.value)
+					cc.continue()
+					}
+				}//func
+			}//func
+
+
+		function walk(){
+			console.log('walk')
+			var t = db.transaction('customers')
+			//t.oncomplete = function(){console.log('c')}
+			var s = t.objectStore('customers')
+			var c = s.openCursor()
+			c.onsuccess = function(e){
+				var cc = e.target.result
+				if(cc) {
+					console.log(cc.value)
+					cc.continue()
+					}
+				}//func
+			}//func
+
+
+
+		}//func
+
+	r.onupgradeneeded = function(e){ //  catch on 1st notice change of version number.
+		var rr = e.target
+
+		var db = rr.result
+
+		for(var i = db.objectStoreNames.length-1;i>=0;i--){
+			db.deleteObjectStore(db.objectStoreNames[i])
+			}//for
+
+		var s = db.createObjectStore('customers',{keyPath:'dbid',autoIncrement:true})
+		s.createIndex("udate", "udate")
+		s.createIndex("color", "color")
+
+		var s = db.createObjectStore('ledger',{keyPath:'dbid',autoIncrement:true})
+		s.createIndex("udate", "udate")
+
+		}//func
+
+</script>

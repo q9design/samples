@@ -1,0 +1,17 @@
+CACHE MANIFEST
+#
+# 2014.06.17 - 3\6
+#
+
+#upg: jsxroot/code.js
+#     jsxroot/style.css
+
+#upg: automatically return all media paths (from nimble) -- nimble jsx lite pak offline ac (appcache)
+
+#big.png
+#big2.png
+#big3.png
+
+small.png
+small2.png
+small3.png

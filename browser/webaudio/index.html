@@ -1,0 +1,82 @@
+<title>Audio Lab</title>
+<pre class='status'></pre>
+<canvas style='width:100%;' width=400 height=200></canvas>
+<script>
+	// next : how about time filtering? .. capuirete and analize later? --- expected time pattern.
+	// object-fit: cover;
+	navigator.getUserMedia = ( navigator.getUserMedia ||
+		               		navigator.webkitGetUserMedia ||
+		               		navigator.mozGetUserMedia ||
+		               		navigator.msGetUserMedia);
+
+	var dStatus = document.querySelector('.status')
+
+	var canvas = document.querySelector('canvas')
+	var itx = canvas.getContext('2d')
+
+	var atx = new AudioContext()
+	var a = atx.createAnalyser()
+
+	var acc = new Float32Array(a.fftSize)
+
+	navigator.getUserMedia({audio:true},function(s){
+		var ss = atx.createMediaStreamSource(s)
+		ss.connect(a)
+		},function(e){})
+
+	var dc = 0
+	function draw(){
+		dc++
+		var ab = new Uint8Array(a.fftSize)
+		a.getByteFrequencyData(ab)    // FFT values
+		//a.getByteTimeDomainData(ab) // live micro snapshot of speaker values
+
+
+		
+		var w = canvas.width
+		var h = canvas.height
+		var blen = ab.length
+
+	
+		for(var i = 0;i<blen;i++){
+			acc[i] += ab[i]
+			}//for
+
+
+		itx.fillStyle = '#000000'
+		itx.fillRect(0,0,w,h)
+
+
+		itx.fillStyle = 'yellow'
+		for(var i =0;i<w;i++){
+			var ii = Math.round((i/w)*blen)
+			var v = acc[ii]
+			var vv = (v/255)/dc
+			vv = vv*h
+			var x = i
+			var y = h
+			//console.log(v,x,h-vv,1,h)
+			itx.fillRect(x,h-vv,1,h)
+			}
+
+
+		itx.fillStyle = 'rgba(255,0,0,0.5)'
+		for(var i =0;i<w;i++){
+			var ii = Math.round((i/w)*blen)
+			var v = ab[ii]
+			var vv = (v/255)
+			vv = vv*h
+			var x = i
+			var y = h
+			//console.log(v,x,h-vv,1,h)
+			itx.fillRect(x,h-vv,1,h)
+			}
+
+		//setTimeout(draw,3000)
+		window.requestAnimationFrame(draw)
+
+		//console.log(acc,ab)
+		}//draw
+
+	draw()
+</script>

@@ -1,0 +1,116 @@
+<title>Storage Constraints - IndexedDB</title>
+
+<template>
+	<button onclick='go()'>go</button>
+	<button onclick='list()'>list</button>
+	<button onclick='clearall()'>clear</button>
+
+	<div></div>
+</template>
+
+<script>
+
+	// found no storage limit <20GB 50M chunks -- when compressed.
+	//   with random data.. 4GB data (9.6GB disk use) .. store limit reached (135G of 220G free on disk)
+	// strange .. cursor next time lengthins with blob store size ff & chrome
+
+	// a doc says basically chrome allows 10% of free space per app.
+
+	var dbR = indexedDB.open('storage-test',5)
+	var go,list
+	var out
+
+	var global = {
+			add : 0,
+			sum : 0,
+			items : 0
+			}
+
+	//Object.observe(global,function(l){console.log(global)})
+
+	
+	dbR.onerror = function(e){console.log('err',e)}
+	dbR.onsuccess = function(e){
+		var db = e.target.result
+		document.body.innerHTML = document.querySelector('template').innerHTML
+		out = document.querySelector('div')
+
+		clearall = function(){ // why.. 'clear' as function name not work?
+				out.innerHTML = 'clearing...'
+				var r = db.transaction('data','readwrite').objectStore('data').clear()
+				r.onsuccess = function(e){
+					global.add = 0
+					global.sum = 0
+					out.innerHTML = 'cleared'
+					}//func
+
+				r.onerror = function(e){
+					console.log('err',e)
+					}//func
+
+				}//func
+
+		go = function(){
+			var t = db.transaction('data','readwrite')
+			var s = t.objectStore('data')
+			var a = 65535//1024*1024*50
+			global.add+=a
+			var b = new ArrayBuffer(a)
+			var bb = new Uint8Array(b,0,65535)
+			crypto.getRandomValues(bb)
+			s.add({blob:b})
+
+			t.onabort = function(e){console.log('abort:',e.target.error.name,"+",e.target.error.message)}
+
+			t.oncomplete = function(e){
+				console.log('complete',e.target)
+				//setTimeout(go,500)
+				//go()
+				}//func
+
+			t.onerror = function(e){
+				console.log('err',e)
+				}///func
+
+			out.innerHTML = nice4num(global.add)
+			}//func
+
+		list = function(){
+			global.sum = 0
+			global.items = 0
+			out.innerHTML = 'counting..'
+			db.transaction('data').objectStore('data').openCursor().onsuccess = function(e){
+				var c = e.target.result 
+				if(c){
+					global.items ++
+					var v = c.value
+					global.sum += v.blob.byteLength
+					//console.log(new Uint8Array(v.blob,0,150))
+					c.continue()
+					}
+				else {
+					out.innerHTML = 'sum '+nice4num(global.sum) + " in "+nice4num(global.items)+" items."
+					}//else
+				}//func
+
+			}//func
+
+		}//func
+
+	dbR.onupgradeneeded = function(e){
+		console.log('create db stores')
+		var db = e.target.result
+
+		for(var i = db.objectStoreNames.length-1;i>=0;i--){
+			db.deleteObjectStore(db.objectStoreNames[i])
+			}//for
+		
+		db.createObjectStore('data',{keyPath:'dbid',autoIncrement:true})
+		
+		}//func
+
+//http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+function nice4num(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+</script>

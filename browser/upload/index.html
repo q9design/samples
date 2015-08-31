@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, user-scalable=yes">
+		<style>
+			html {height: 100%;}
+			body {height: 100%; cursor: pointer;}
+			input {display:none;}
+		</style>
+	</head>
+	<body>
+		click to upload (file/pic)
+		<input type='file'>
+		<script>
+			//upg: copy pic to canvas (resizes it)
+			//upload result to hde (temp)
+			//generate embedable #j83jf38j39fj3fj398j893
+			var i = document.querySelector('input')
+			i.addEventListener('change',function(e){
+				console.log('%O',i)
+				var f = i.files[0]
+				var u = URL.createObjectURL(f)
+				console.log(u,f)
+				var img = document.createElement('img')
+				img.src = u
+				document.body.appendChild(img)
+				})//func
+			document.addEventListener('click',function(e){
+				i.click()
+				})
+		</script>
+	</body>
+</html>

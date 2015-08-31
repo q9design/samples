@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+	<head>
+		<style>
+			.drop-here {min-height: 250px; background: yellow;}
+		</style>
+		<script src='dropzone.js'></script>
+	</head>
+	<body>
+		<div class='drop-here'></div>
+		Drop File and check console.log
+		<script>
+			var dz = new Dropzone(".drop-here", 
+				{ url: "drop.php",
+				 autoProcessQueue: false,
+				 //previewTemplate:'',
+				  accept : function(f,df){
+					df('ok') // tell system not to upload.
+					}
+				}
+				);
+
+			dz.on('addedfile',function(f){
+
+					var n = f.name
+					var t = f.type
+					console.log('file dropped',n,t,f)
+
+					console.log('procesing to text...')
+					var r = new FileReader()
+					r.onload = function(e)
+						{
+						console.log('file data',r.result)
+						}
+					r.readAsText(f) //invoke process
+		
+				dz.removeFile(f)
+
+				})
+
+			console.log(dz)
+		</script>
+	</body>
+</html>
+

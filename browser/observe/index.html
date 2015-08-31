@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+	<head>
+		<script>
+			//
+			// http://wiki.ecmascript.org/doku.php?id=harmony:observe#solution
+			//
+			// Object.observe allows for the direct observation of changes to ECMAScript objects.
+			// It allows an observer to receive a time-ordered sequence of change records which 
+			// describe the set of changes which took place to the set of observed objects.
+			//
+			// http://www.html5rocks.com/en/tutorials/es7/observe/
+			// http://amasad.me/2014/03/16/why-im-excited-about-objectobserve
+			// http://wiki.ecmascript.org/doku.php?id=harmony:observe
+			// https://github.com/Polymer/observe-js
+			//
+			// see also mutationObserver -- similar thing for changes to DOM.
+			//
+		</script>
+	</head>
+	<body>
+		<script>
+			// getter/setter (defineProperty) basics /////////////////////////
+			var m = {}
+
+			Object.defineProperty(m,'a',{
+				get: function(){
+					return 'hello!'
+					},
+			        set: function(v){
+					console.log('set',v)
+					}
+				})
+
+			console.log(m.a) // hello!
+			m.a = 1		 // set 1 
+			console.log(m.a) // hello!
+
+
+			//////////////////////////////////////////////////////////////////
+			// add an observe notifier //////////////////////////////////////
+			var m = {}
+
+			Object.defineProperty(m,'a',{
+				get: function(){
+					return 'hello!'
+					},
+			        set: function(v){
+					Object.getNotifier(this).notify({type:'update',name:'a',oldValue:'hi'})
+					console.log('set',v)
+					}
+				})
+
+			var ob = function(c){
+				c.forEach(function(c,i){
+					console.log(i,c)
+					})//foreach
+				}//func
+
+			Object.observe(m,ob)
+
+			console.log(m.a) // hello!
+			m.a = 1		 // set 1 
+			console.log(m.a) // hello!
+
+
+
+			
+ 		</script>
+	</body>
+</html>

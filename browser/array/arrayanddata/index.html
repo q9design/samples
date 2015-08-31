@@ -1,0 +1,31 @@
+<body>
+<script>
+        // https://developer.mozilla.org/en-US/docs/Web/API/ArrayBuffer
+        // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data
+	// http://www.html5rocks.com/en/tutorials/file/xhr2/
+	// https://developer.mozilla.org/en-US/docs/Web/API/FormData
+
+	var len = 256
+	var a = new ArrayBuffer(len);
+	var b = new Blob([a], {type: 'application/octet-stream'});
+
+	var f = new FormData();
+	f.append('length',len)  // your data
+	f.append('buf',b) 	// $_FILES index name 'buf'
+
+	var r = new XMLHttpRequest()
+	r.open("POST",'upload.php',true)
+
+	r.onload = function(e){
+		var res =  e.target.responseText
+
+		console.log('e',e)
+		console.log(res) // or response?
+
+		document.body.innerHTML = "<pre>"+res+"</pre>"
+		}
+
+
+	r.send(f)
+</script>
+</body>

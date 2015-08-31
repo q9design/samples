@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<script>
+			// database name scope per method://domain:port/
+
+			// firefox : privacy mode = disabled 2014.06.24
+
+			// http://mdn.beonex.com/en/IndexedDB/Using_IndexedDB.html
+		
+		 	// relations...
+			//    database : database
+			//    store    : table
+
+			// perhaps a 'promised' version of this?
+			// could prob build all sorts of systems out of this.
+
+			var sampleData = [
+				{custid:5,name:"Bill",phone:'555-555-5555',email:'a@b.com'},
+				{custid:9,name:"Donna",phone:'555-545-5555',email:'z@x.com'},
+				{custid:11,name:"Tim",phone:'555-545-5555',email:'z@xy.com',extra:'abcdefg'},
+				{custid:12,phone:'555-145-5555',email:'aa@aaz.com'},
+				{custid:13,name:'john',email:'aa@aa.com'},
+				{custid:15},
+				{custid:16},
+				]
+
+			var version = (new Date()).getTime()
+			//version = 1
+			//indexedDB.deleteDatabase('MyTestDatabase')
+			var r = indexedDB.open('MyTestDatabase',version)
+
+
+			r.onerror = function(e){console.log('error',e)}
+			r.onsuccess = function(e){
+				console.log('success',e)
+				var db = e.target.result
+
+				// add
+				var t = db.transaction(['customers'],"readwrite")
+				console.log(t)
+				t.oncomplete = function(e){console.log('transaction oncomplete',e)}
+				t.onerror = function(e){console.log('transaction onerror',e)}
+				var s = t.objectStore("customers")
+				var r = s.add({custid:20,name:'jane'}) //use 'put' for overwrite. (in case has same key)
+				r.onsuccess = function(e){console.log('add onsuccess',e,e.target.result)}				
+
+				// delete
+				var r = db.transaction(['customers'],"readwrite").objectStore('customers').delete('12')
+				r.onsuccess = function(e){console.log('its gone',e)}
+
+				// get
+				db.transaction('customers').objectStore('customers').get(9).onsuccess = 
+					function(e){console.log('query result: ',e.target.result)}
+
+				// cursor
+				var s = db.transaction("customers").objectStore("customers")
+				s.openCursor().onsuccess = function(e){ // gets called repeatedly (on continue and finally opened with null value for target result)
+					var c = e.target.result
+					console.log('open cursor',e,c)
+					if(c)
+						{
+						var key = c.key
+						var val = c.value
+						console.log(key,val) // val = object record
+						c.continue()
+						}
+					else
+						console.log('c is false',typeof(c))
+
+					}
+				
+				}
+
+			// init db
+			r.onupgradeneeded = function(e){ // called only once (when the open # changes)
+				// i think this gets called before 'onsuccess'
+				var db = e.target.result
+
+				console.log('upgradeneeded',e,db.objectStoreNames)
+
+				if(db.objectStoreNames.contains('customers'))
+					db.deleteObjectStore('customers')
+
+				var s = db.createObjectStore('customers',{keyPath: "custid"}) // we made up dbid (but keyPath is specific?)
+				s.createIndex('name','name',{unique: false})
+				s.createIndex('email','email',{unique: true})
+
+				for(var i in sampleData)
+					{
+					var v = sampleData[i]
+					s.add(v)
+					}
+				}
+		</script>
+	</body>
+</html>
