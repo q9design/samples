@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+	<head>
+		<script type="text/javascript" src="http://s3.amazonaws.com/plivosdk/web/plivo.min.js"></script>
+	</head>
+	<body>
+		<script>
+
+			Plivo.onWebrtcNotSupported = function(){}
+                    	Plivo.onReady = function(){}
+                    	Plivo.onLogin = function(){
+				setTimeout(function(){
+					Plivo.conn.call('test.time@sip5060.net')
+					},2000)
+				}
+	                //Plivo.onLoginFailed = onLoginFailed;
+                    	//Plivo.onLogout = onLogout;
+                    	//Plivo.onCalling = onCalling;
+                    	//Plivo.onCallRemoteRinging = onCallRemoteRinging;
+                    	//Plivo.onCallAnswered = onCallAnswered;
+                    	//Plivo.onCallTerminated = onCallTerminated;
+                    	Plivo.onCallFailed = function(cause){
+				console.log('called failed cause',cause)
+				}
+                    	Plivo.onMediaPermission = function(){
+				Plivo.conn.login('ysd23443240sf04sdf3','passwordhere')
+				}
+                    	//Plivo.onIncomingCall = onIncomingCall;
+                    	//Plivo.onIncomingCallCanceled = onIncomingCallCanceled;
+
+                    	Plivo.init();
+		</script>
+	</body>
+</html>

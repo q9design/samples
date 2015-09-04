@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <!--
+
+	https://developers.google.com/youtube/iframe_api_reference
+	https://developers.google.com/youtube/player_parameters
+	https://developers.google.com/youtube/js_api_reference
+
+      -->
+    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+    <div id="player"></div>
+
+    <script>
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '390',
+          width: '640',
+          videoId: 'M7lc1UVf-VE',
+          events: {
+            'onReady': function(e){
+		var p = e.target
+		p.playVideo()
+		console.log('is_ready',p,player)
+		},
+            'onStateChange': function(e){
+			//-1 (unstarted)
+			//0 (ended)
+			//1 (playing)
+			//2 (paused)
+			//3 (buffering)
+			//5 (video cued).
+			// YT.PlayerState.PLAYING
+		var s = e.data
+		var p = e.target
+		}//onStateChange
+          }//events
+
+        });//assign player
+
+      }//onYTIAPIR
+
+  
+    </script>
+    <script src='https://www.youtube.com/iframe_api'></script>
+  </body>
+</html>

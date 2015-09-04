@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <!-- 
+	https://developers.google.com/youtube/youtube_upload_widget
+	
+         1. The 'widget' div element contains the upload widget.
+            The 'player' div element contains the player IFrame.
+	-->
+    <div id="widget"></div>
+    <div id="player"></div>
+
+    <script>
+     (function(){
+      var notify_url = './uploaded.php'
+
+      // 2. Asynchronously load the Upload Widget and Player API code.
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. Define global variables for the widget and the player.
+      // The function loads the widget after the JavaScript code has
+      // downloaded and defines event handlers for callback notifications
+      // related to the widget.
+      var widget;
+      var player;
+      window.onYouTubeIframeAPIReady = function() {
+        widget = new YT.UploadWidget('widget', {
+          width: 500,
+          events: {
+            'onUploadSuccess': onUploadSuccess,
+            'onProcessingComplete': onProcessingComplete,
+            'onApiReady': onAPIReady
+          }
+        });
+      }
+
+      // 4. This function is called when a video has been successfully uploaded.
+      function onUploadSuccess(event) {
+	var videoid = event.data.videoId
+        console.log('Video ID ' + videoid + ' was uploaded and is currently being processed.');
+
+	// upload video id
+	var xhr = new XMLHttpRequest() // IE7 or greater
+	xhr.open('get',notify_url+'?videoid='+videoid,true)
+	xhr.send()
+      }
+
+      // 5. This function is called when a video has been successfully processed.
+      function onProcessingComplete(event) {
+	// optional
+        player = new YT.Player('player', {
+          height: 390,
+          width: 640,
+          videoId: event.data.videoId,
+          events: {}
+        });
+      }
+
+      // set video parameters (unlisted, title, etc)
+      function onAPIReady(event){
+	widget.setVideoPrivacy('unlisted')
+	//widget.setVideoTitle(title) 
+	//widget.setVideoDescription(description);
+	}//func
+	})();
+    </script>
+  </body>
+</html>
