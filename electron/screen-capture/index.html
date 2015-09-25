@@ -1,0 +1,31 @@
+<style>
+	video {width: 500px; height: 300px;}
+</style>
+<h1>Hello!</h1>
+<script>
+
+	// 2015.09.25 -- got stream but display not seem to work. .. next: try copy video to canvas tag.
+
+	navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.getUserMedia;
+
+	navigator.getUserMedia({
+	    video: {
+	      mandatory: {
+		chromeMediaSource: 'screen',
+		 maxWidth: 640,
+		 maxHeight: 480
+	      }
+	    }
+	  }, function(s) {
+	    stream = s;
+		console.log('capturing stream',s)
+		var d = document.createElement('video')
+		d.autoplay = true
+		d.controls = true
+		var url = window.URL.createObjectURL(s)
+		d.src = url
+
+		document.body.appendChild(d)
+		},
+		function(e){console.log('err',e)})
+</script>

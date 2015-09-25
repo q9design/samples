@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<script>
+
+			// --enable-usermedia-screen-capture 
+			// 2015.09.25 -- may require plugin at the moment.
+
+			navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.getUserMedia;
+
+			navigator.getUserMedia({
+			    video: {
+			      mandatory: {
+				chromeMediaSource: 'screen'
+				// maxWidth: 640,
+				// maxHeight: 480
+			      }
+			    }
+			  }, function(s) {
+			    stream = s;
+				console.log('sss',s)
+				},
+				function(e){console.log('err',e)})
+		</script>
+	</body>
+</html>
