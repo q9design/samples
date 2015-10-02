@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<div>
+			<x-bob></x-bob>
+		</div>
+		<script>
+			// http://www.html5rocks.com/en/tutorials/webcomponents/customelements/
+			var proto = Object.create(HTMLElement.prototype)
+
+			proto.createdCallback = function(){
+				console.log('created',this)
+				this.textContent = "I'm bob." // see shadow dom.
+
+				var here = this
+			
+				var tick = function(){ // interestingly this doesn't keep firing
+					console.log('tick%O',here)
+					if(here._live) 
+						here.timer = setTimeout(tick,1000)
+					}
+
+
+				this.attached = function(){
+					console.log('aa')
+					this._live = true // upg: see if attached somehow?
+					tick()
+					}
+
+				this.detached = function(){
+					console.log('bb')
+					clearTimeout(here.timer)
+					this._live = false
+					}
+				}
+
+			proto.attachedCallback = function(){
+				this.attached()
+				}//func
+
+			proto.detachedCallback = function(){
+				this.detached()
+				}//func
+
+
+
+
+
+
+			// ---------------------------------------------------------------
+
+			document.registerElement('x-bob',{prototype: proto})
+
+
+			setTimeout(function(){
+				document.querySelector('div').innerHTML = 'done.'
+				},2500)
+		</script>
+	</body>
+</html>
