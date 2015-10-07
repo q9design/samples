@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<x-bob></x-bob>
+		<script>
+			// http://www.html5rocks.com/en/tutorials/webcomponents/customelements/
+			var proto = Object.create(HTMLElement.prototype)
+
+			proto.createdCallback = function(){
+				console.log('this',this)
+				this.textContent = "I'm bob." // see shadow dom.
+				}
+
+			document.registerElement('x-bob',{prototype: proto})
+		</script>
+	</body>
+</html>

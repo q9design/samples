@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<div>
+			<x-bob></x-bob>
+		</div>
+		<script>
+			// http://www.html5rocks.com/en/tutorials/webcomponents/customelements/
+			var proto = Object.create(HTMLElement.prototype)
+
+			proto.createdCallback = function(){
+				console.log('this',this)
+				this.textContent = "I'm bob." // see shadow dom.
+				this.interval = setInterval(function(){console.log('tick')},1000)
+				}
+
+			proto.attachedCallback = function(){
+				console.log('hello.')
+				}//func
+
+			proto.detachedCallback = function(){
+				console.log('bye%O',this)
+				clearTimeout(this.interval)
+				}//func
+
+			document.registerElement('x-bob',{prototype: proto})
+
+
+			setTimeout(function(){
+				document.querySelector('div').innerHTML = 'done.'
+				},2500)
+		</script>
+	</body>
+</html>

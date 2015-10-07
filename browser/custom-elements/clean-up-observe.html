@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<div>
+			<x-bob></x-bob>
+		</div>
+		<script>
+			var model = {a:1,b:2}
+
+			// http://www.html5rocks.com/en/tutorials/webcomponents/customelements/
+			var proto = Object.create(HTMLElement.prototype)
+
+			proto.createdCallback = function(){
+				console.log('created',this)
+				this.textContent = "I'm bob." // see shadow dom.
+
+				var here = this
+
+
+				var update = function(l){
+					console.log('update',l)
+					}
+
+				this.attached = function(){
+					console.log('aa')
+
+					Object.observe(model,update)
+					}
+
+				this.detached = function(){
+					console.log('bb')
+
+					Object.unobserve(model,update)
+					}
+				}
+
+			proto.attachedCallback = function(){
+				this.attached()
+				this._live = true
+				}//func
+
+			proto.detachedCallback = function(){
+				this._live = false
+				this.detached()
+				}//func
+
+
+
+
+
+
+			// ---------------------------------------------------------------
+
+			document.registerElement('x-bob',{prototype: proto})
+			//document.registerElement('x-bob',{prototype: Object.create(HTMLElement.prototype)})
+			//console.log('%O',document.querySelector('x-bob'))
+
+
+
+			setInterval(function(){
+				model.a++
+				},500)
+
+			setTimeout(function(){
+				document.querySelector('div').innerHTML = 'done.'
+				},2500)
+		</script>
+	</body>
+</html>
