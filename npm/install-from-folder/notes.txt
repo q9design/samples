@@ -1,0 +1,2 @@
+npm install --save lib-source/lib-a
+npm install --save lib-source/lib-b

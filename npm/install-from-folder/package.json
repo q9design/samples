@@ -1,0 +1,15 @@
+{
+  "name": "install-from-folder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lib-a": "file:lib-source/lib-a",
+    "lib-b": "file:lib-source/lib-b"
+  }
+}
