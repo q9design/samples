@@ -1,0 +1,23 @@
+
+#to install t o system...
+sudo npm i -g create-command-line-module
+
+
+
+///////////////////////////
+
+{
+  "name": "create-command-line-module",  			// install name .. npm i create-command-line-module
+  "version": "1.0.0",
+  "description": "",
+  "main": "optional-main.js",					// var testcli = require('create-command-line-module')
+  "bin": {
+	"test-cli" : "test-cli.js"    				// command line run name .. # test-cli
+	},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
+
