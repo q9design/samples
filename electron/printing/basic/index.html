@@ -1,0 +1,27 @@
+<h1>Hello!</h1>
+<script>
+	var remote = require('remote');
+	var Menu = remote.require('menu');
+
+var template = [
+  {
+    label: 'Edit',
+    submenu: [
+      {
+        label: 'Print',
+        accelerator: 'CmdOrCtrl+P',
+        role: 'print', // how use roll automatically? .. what roll for?
+	click: function(){
+		remote.getCurrentWindow().print()
+		}
+      }]
+	}
+	]
+
+	Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+	
+
+
+
+	
+</script>
