@@ -1,0 +1,29 @@
+<h1>Hello!</h1>
+<button>print</button>
+<script>
+
+	var remote = require('remote')
+	var BrowserWindow = remote.require('browser-window')
+	
+	var p = document.querySelector("button")
+	p.addEventListener('click',function(){
+		
+//		var nw = window.open('print.html')
+		var nw = new BrowserWindow({width: 1600, height: 800, show: false})
+		nw.on('closed',function(){
+			nw = null
+			})
+		
+		console.log('nw',nw);
+		nw.openDevTools()
+		nw.loadUrl('file://'+__dirname+'/print.html')
+		nw.show()
+		
+		
+		
+		
+		})
+	console.log('button',p);
+	
+	
+</script>
