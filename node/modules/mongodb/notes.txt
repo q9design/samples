@@ -13,3 +13,6 @@
 > promise mode
 
 > what's best way to include/bundle with a electron app (just start it at the same time?)
+
+kerberos
+apt-get install libkrb5-dev
