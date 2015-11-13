@@ -1,0 +1,12 @@
+
+pretty cool!
+
+next:
+	- how to know what changes (for synchro)
+
+	- how to update what has changed (for synchro)
+
+	- menu control actions / ui .. simple is nice.
+
+
+upg: add to vim command mode.. so :w becomes save or download etc.

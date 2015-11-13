@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+	<head>
+		<title>vim codemirror javascript editor</title>
+		<style>
+			html {height: 100%; overflow:hidden; overflow-y: hidden;}
+			body {height: 100%; padding: 0; margin: 0; font: normal 16px arial;}
+			.editor {position: absolute; top:0; left:0; right:0; bottom : 0;}
+			.mode { position: absolute; right: 25px; bottom: 20px; color: rgba(0,0,0,0.65);}
+		</style>
+
+		<link rel="stylesheet" href="common/lib/codemirror.css">
+		<link rel="stylesheet" href="common/addon/dialog/dialog.css">
+
+		<script src="common/lib/codemirror.js"></script>
+		<script src="common/mode/javascript/javascript.js"></script>
+		<script src="common/keymap/vim.js"></script>
+
+
+		<script src="common/addon/dialog/dialog.js"></script>
+		<script src="common/addon/search/searchcursor.js"></script>
+		<script src="common/addon/edit/matchbrackets.js"></script>
+
+
+	</head>
+	<body>
+		<div class='editor'></div>
+		<div class='mode'></div>
+
+		<script>
+		  	var editor = CodeMirror(document.querySelector('.editor'),{
+				keyMap:'vim',
+				matchBrackets: true,
+				showCursorWhenSelecting: true,
+				lineNumbers:true
+				})
+			editor.setSize('100%','100%')
+
+			var dMode = document.querySelector('.mode')
+
+			var keys = ''
+
+			CodeMirror.on(editor, 'vim-mode-change', function(mode) {
+				if(mode.mode == 'normal')
+					mode.mode = ''
+
+				dMode.textContent = mode.mode + (mode.submode || '')
+
+				});
+		</script>
+
+	</body>
+</html>
