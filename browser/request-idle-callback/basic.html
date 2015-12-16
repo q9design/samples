@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+	<head>
+		<script>
+			// https://developers.google.com/web/updates/2015/08/using-requestidlecallback?hl=en
+			// https://www.youtube.com/watch?v=0O0QwqSf6nA
+		</script>
+	</head>
+	<body>
+		<div class='about'></div>
+		<div class='count'></div>
+		<script>
+			var dAbout = document.querySelector('.about')
+			var dCount = document.querySelector('.count')
+			var click = v=>{
+				if(v){
+					//console.log('deadline',v,performance.now())
+
+					dAbout.textContent = v.timeRemaining()
+
+					var c = 0
+					while((v.timeRemaining()) > 0){
+						c++
+						}//while
+					
+					dCount.textContent = c
+					}//if
+
+				requestIdleCallback(click)
+				}//func
+
+			click()
+
+		</script>
+	</body>
+</html>

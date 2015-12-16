@@ -1,0 +1,1 @@
+tip: don't change dom in requestIdleCallback .. instead.. queue up domFragrments and append them in requestAnimationFrame.

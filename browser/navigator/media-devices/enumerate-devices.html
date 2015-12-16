@@ -1,0 +1,50 @@
+<style>
+	body {font: normal 16px arial;}
+	.item {display: inline-block; width: 170px; border: solid 1px #eee;}
+</style>
+<body>
+	<script>
+		//https://developers.google.com/web/updates/2015/10/media-devices?hl=en
+
+		// next: use to select devices .. yay.. this might solve our cellphone issue with forced speakerphone.
+		// 		- could we infer the proper input/output as default settings? should we?
+
+		// upg: persistent permissions -- readable labels
+
+		console.log(navigator)
+
+		var map = {
+			'audioinput': 'Microphone',
+			'audiooutput': 'Speaker',
+			'videoinput': 'Camera',
+			}
+
+		navigator.mediaDevices.enumerateDevices().
+			then(l=>{
+				// https://developer.mozilla.org/en-US/docs/Web/API/MediaDeviceInfo
+				l.forEach(v=>{
+					console.log(v)
+					var id = v.deviceId		// cookie like: so can save locally the user's media preferences and automatically select.
+					var group_id = v.groupId	// join elements to their device source (a webcam might have both video and audio input)
+					var kind = v.kind
+					var label = v.label || map[kind] // Only available during active MediaStream use or when persistent permissions have been granted.
+
+					var d = document.createElement('div')
+					d.innerHTML = `<div class='item'><b>Label:</b> ${label}</div> <div class='item'><b>group:</b> ${group_id}</div> <div class='item'><b>Kind:</b> ${kind}</div> <div class='item'><b>Id:</b> ${id}</div>`
+					document.body.appendChild(d)
+					})
+				}).
+			catch(e=>console.log('err',e))
+
+/*
+
+Label: Microphone group: 2004946474 Kind: audioinput Id: default
+Label: Microphone group: 1556103112 Kind: audioinput Id: f7e8c8ba897f27d61f11edb01592f4696b83d00e54e918ad36c081b02ea427a9
+Label: Microphone group: 161503371 Kind: audioinput Id: 896d6baf07130eb8b800d54038e723398dc5516ad3e0031cee3f118325888420
+Label: Speaker group: 2004946474 Kind: audiooutput Id: default
+Label: Speaker group: 822290830 Kind: audiooutput Id: 757287f38899e9ee2384c5bc0998c83acad7c27386d58f0bfd2557fd2820e9fd
+Label: Speaker group: 1617554202 Kind: audiooutput Id: afed5e41dbbedbcf33e2f2daeda16cf0f3603610759e01a4ce9cccc3782e0b2f
+
+*/
+	</script>
+</body>

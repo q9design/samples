@@ -1,0 +1,26 @@
+<script>
+
+	// https://developers.google.com/web/updates/2015/10/notification-requireInteraction
+  	// https://developer.mozilla.org/en-US/docs/Web/API/notification
+
+	console.log('Notification Permssion :',Notification.permission)
+
+	var go = n=>{
+		var p = Notification.permission
+		console.log('permission',p)
+
+		if(p === 'granted'){
+			var n = new Notification('Hello!',{requireInteraction: true})  // chrome 47 -- will automatically dissapear eventually (~20 seconds) unless requireInteraction: true;
+			console.log(n)
+			}
+		else
+			alert('no permission')
+
+		}//func
+
+	if(Notification.permission === 'granted')
+		go()
+	else 
+		Notification.requestPermission(go)
+
+</script>

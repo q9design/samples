@@ -1,0 +1,13 @@
+
+
+https://en.wikipedia.org/wiki/Comparison_of_layout_engines_(Cascading_Style_Sheets)
+
+http://www.w3.org/TR/css3-page/
+
+http://www.w3.org/TR/WD-CSS2-971104/page.html
+
+
+=============
+
+
+2015.11.20 -- print control still a litle rough.
