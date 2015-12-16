@@ -31,9 +31,8 @@ c.on('connect',function(){
 	c.login(auth,function(err){console.log('login',!err)
 		if(!err){
 			c.send({
-				from:'lab@37743.org',
-				//to:'scotty.nordstrom@q9design.org'
-				to: 'adam.mitchell@q9design.com'
+				from:'lab@domain.org',
+				to: 'lab2@domain2.com'
 				},'Subject: Hello\r\n\r\nHello! from node.js',
 				function(cc,r,rc){
 					console.log(cc,r,rc)
