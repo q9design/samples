@@ -1,0 +1,38 @@
+<html>
+<head>
+	<title>jQuery Example</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <style>
+        .blue {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <script>
+         $(document).ready(function() {
+             $("#button1").addClass("blue");
+             $("#button2").removeClass("blue");
+             $("#button3").prop("disabled", true);
+             $("#button4").css("color", "red");
+             $("#button5").text("This is Button 5");
+             $("#button6").html("<h2>Button 6</h2>");
+             $("#button7").remove();
+             $("#button6").clone().appendTo("#button6clone");
+             $("#button9").parent().css("background-color", "green")
+         });
+    </script>
+	<button id="button1">Button 1</button>
+	<button id="button2" class="blue">Button 2</button>
+	<button id="button3">Button 3</button>
+	<button id="button4">Button 4</button>
+	<button id="button5">Button 5</button>
+	<button id="button6">Button 6</button>
+	<button id="button7">Button 7</button>
+    <div id="button6clone"></div>
+    <button id="button8">Button 8</button>
+    <div id="button9container">
+    <button id="button9">Button 9</button>
+    </div>
+</body>
+</html>
