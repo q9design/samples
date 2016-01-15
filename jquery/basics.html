@@ -20,6 +20,7 @@
              $("#button7").remove();
              $("#button6").clone().appendTo("#button6clone");
              $("#button9").parent().css("background-color", "green")
+             $("#buttoncontainers").children().addClass("blue")
          });
     </script>
 	<button id="button1">Button 1</button>
@@ -34,5 +35,11 @@
     <div id="button9container">
     <button id="button9">Button 9</button>
     </div>
+    <div id="buttoncontainers">
+	<button id="button10">Button 10</button>
+	<button id="button11">Button 11</button>
+	<button id="button12">Button 12</button>
+    </div>
+    
 </body>
 </html>
