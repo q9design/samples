@@ -1,0 +1,7 @@
+sudo npm i -g asar
+
+asar pack your-app-path app.asar
+
+electron app.asar
+
+http://electron.atom.io/docs/v0.36.0/tutorial/application-packaging/

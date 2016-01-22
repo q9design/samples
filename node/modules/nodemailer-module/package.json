@@ -1,11 +1,15 @@
 {
   "name": "nodemailer-module",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Adam <adam.mitchell@q9design.com>",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "nodemailer": "^1.10.0"
+  }
 }

@@ -1,0 +1,5 @@
+{
+"key":"/path/to/your/privkey.pem",
+"cert":"/path/to/your/certchain.pem"
+}
+
