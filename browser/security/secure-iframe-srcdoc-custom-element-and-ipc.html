@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+    <head> 
+        <title>Secure frame test</title>
+        <style>
+            iframe {border: solid 1px #eee; display: block;}
+            html {height: 100%;}
+            body {height: 100%; padding: 0; margin: 0; font: normal 16px arial;}
+        </style>
+    </head>
+    <body>
+        <iframe sandbox='allow-scripts'></iframe>
+        <script>
+        //upg: best way to support/handle iframe content size.
+
+            
+	///////////////////////////////////////////
+	// upg: could fetch this
+
+            var src=`
+                <!doctype html>
+                <html>
+                    <head>
+                          <style>
+                            html {height: 100%; overflow-y: hidden;}
+                            body {height: 100%; padding: 0; margin: 0}
+                          </style>
+                    <\/head>
+                    <body>
+                        Hello.
+                        <script>
+                            console.log('hello from frame%O',this)
+		            window.parent.postMessage({domain:document.domain, note:'im running'},'*') // upg: get domain from param?
+                            var p = Object.create(HTMLElement.prototype);
+                            p.createdCallback = function(){
+                                var dom = this.createShadowRoot()
+                                dom.innerHTML = '<style>:host{display:block;}</style>YAY!'
+                                setInterval(n=>{
+                                    var d = document.createElement('div')
+                                    d.innerHTML = 'hello! '+Date.now()
+                                    dom.appendChild(d)
+                                    var w = document.body.scrollWidth
+                                    var h = document.body.scrollHeight
+                                    window.parent.postMessage({type:'size',w,h},'*')
+                                    },1500)
+                                }
+
+                            var pp = document.registerElement('x-tag',{prototype: p})
+                            var ppp = new pp()
+                            document.body.appendChild(ppp)
+                            console.log(ppp)
+
+		
+			    // https://developer.mozilla.org/en/docs/Web/API/MutationObserver
+                            // select the target node -- doesn't watch contents of shadow dom?
+                            var target = document.querySelector('body');
+                            console.log('watching',target)
+
+                            // create an observer instance
+                            var observer = new MutationObserver(function(mutations) {
+                              mutations.forEach(function(mutation) {
+                                console.log('mm',mutation.type);
+                              });    
+                            });
+
+                            // configuration of the observer:
+                            var config = { attributes: true, childList: true, characterData: true };
+
+                            // pass in the target node, as well as the observer options
+                            observer.observe(target, config);
+
+                            // later, you can stop observing
+                            //observer.disconnect();
+
+
+                            window.onresize = e=>console.log('rr',e)
+                            window.addEventListener('message', function(e) {
+                              var message = e.data;
+                                console.log('internal a message!',message,e)
+                                e.source.postMessage('hi','*')
+                            });
+                            //console.log('doc',document,window,this)
+                        <\/script>
+                    </body>
+                </html>
+                `
+	//
+	////////////////////////////////////////////////
+
+
+            
+            var i = document.querySelector('iframe')
+            i.srcdoc = src // use ObjectURL for IE?
+            //i.src = 'urlhere'
+            console.log('if%O',i)
+            setTimeout(n=>{
+                i.contentWindow.postMessage('hello','*') // is there a better value for domain? (srcdoc origin is 'null'?)
+                },1500)
+            
+            window.addEventListener('message',e=>{
+                var message = e.data
+                console.log('parrent recv a message',message,e)
+                if(message.type){
+                    var t = message.type
+                    if(t == 'size'){
+                        //i.width = message.w
+                        i.height = message.h
+                        }
+                    }
+                })
+            
+            
+           var resize = function()
+			{
+				//var h = i.contentWindow.document.body.scrollHeight
+				//var w = i.contentWindow.document.body.scrollWidth
+				console.log(w,h)
+				i.height = h
+				i.width = w
+			}
+           
+           //setInterval(resize,500)
+            
+
+         </script>
+    </body>
+</html>
+
