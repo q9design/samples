@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+	<head>
+		<script src='pixi.js'></script>
+		<style>
+			html {height: 100%; overflow: hidden;}
+			body {height: 100%; padding: 0; margin: 0;}
+			canvas {background: yellow;}
+			.count {position: absolute; top: 15px; right: 15px; color: yellow; font-weight: bold; font-size: 32px;}
+		</style>
+	</head>
+	<body>
+		<div class='count'></div>
+		<script>
+			// upg: add fps view
+			// upg: make different sizes (the slower the smalelr)
+
+			console.log('PIXI',PIXI)
+
+			var dCount = document.querySelector('.count')
+
+			var width = 256
+			var height = 256
+			var r = PIXI.autoDetectRenderer(256,256)
+			r.backgroundColor = '0x0000ff'
+			r.autoResize = true
+			document.body.appendChild(r.view)
+
+
+			var c = new PIXI.Container()
+
+			var t =  PIXI.Texture.fromImage('boxy-guy.png')  
+			
+			var addSprite = function(){
+				var s = new PIXI.Sprite(t)
+			
+				s.anchor.x = 0.5
+				s.anchor.y = 0.5
+
+				s.position.x = width/2
+				s.position.y = height/2
+
+				s.scale.x = 10  // math the speed and adjust scale
+				s.scale.y = 10
+
+				s.rotation = 0.5
+
+				sprites.push({s,vx:10*Math.random()-5,vy:10*Math.random()-5,rotation:0.01*Math.random()-0.005})
+				c.addChild(s)
+
+				dCount.textContent = sprites.length
+				}//func
+			
+			///////////////////////////
+			var count = 0
+			var sprites = []
+			function animate(){
+
+				count ++
+				if((count % 60*5) == 0){
+					addSprite()	
+					}
+				r.render(c)
+	
+				sprites.forEach(v=>{
+					var s = v.s
+					s.position.x += v.vx
+					s.position.y += v.vy
+					s.rotation += v.rotation
+
+					var x = s.position.x
+					var y = s.position.y
+					if(
+						(x > width+100) || (x < -100) ||
+						(y > height+100) || (y < -100)
+					) {
+						s.position.x = width/2
+						s.position.y = height/2
+						v.rotation *= 1.25
+
+						if(Math.random() < 0.10)
+							addSprite()
+						}
+	
+					})
+				//s.rotation += 0.01
+				requestAnimationFrame(animate)
+				}//func
+
+			animate()
+
+
+			var resize = function(){
+				//upg: debounce
+
+				width = window.innerWidth
+				height = window.innerHeight
+				
+				r.resize(width,height)
+				//console.log('resized to',width,height)
+				}
+
+			window.addEventListener('resize',resize)
+			resize()
+			addSprite()
+		</script>
+	</body>
+</html>
