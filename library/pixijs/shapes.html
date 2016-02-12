@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+	<head>
+		<script src='pixi.js'></script>
+		<style>
+			canvas {background: yellow;}
+		</style>
+	</head>
+	<body>
+		<script>
+
+			// http://pixijs.github.io/docs/PIXI.Graphics.html
+
+
+			console.log('PIXI',PIXI)
+
+			var r = PIXI.autoDetectRenderer(256,256)
+			r.backgroundColor = '0x0000ff'
+			document.body.appendChild(r.view)
+
+			var c = new PIXI.Container()
+			
+			var g = new PIXI.Graphics()
+
+			g.beginFill(0x66CCFF)
+			g.lineStyle(4,0xFF3300,1)
+
+			g.drawRect(0,0,100,100)
+
+			g.endFill()
+
+			g.beginFill(0xCCFF66)
+			g.lineStyle(4,0x33000FF)
+			g.drawCircle(0,0,32)
+			g.endFill()
+
+		
+
+			g.pivot.x = 50
+			g.pivot.y = 50
+
+
+			g.x = 128
+			g.y = 128
+
+
+			c.addChild(g)
+			
+			// ----------------------
+			function animate(){
+
+				g.rotation += 0.01
+
+				r.render(c)
+				requestAnimationFrame(animate)
+				}//func
+
+			animate()
+		</script>
+	</body>
+</html>

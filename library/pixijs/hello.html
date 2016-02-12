@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+	<head>
+		<script src='pixi.js'></script>
+	</head>
+	<body>
+		<script>
+	
+			// https://github.com/kittykatattack/learningPixi#displaying-text
+
+			console.log('PIXI',PIXI)
+
+			var r = PIXI.autoDetectRenderer(256,256)
+			document.body.appendChild(r.view)
+
+			var c = new PIXI.Container()
+
+			var t = new PIXI.Text("hello!!",{font: "32px sans-serif",fill:"white"})
+			var b = t.getBounds()
+			
+			t.pivot.x = b.width/2
+			t.pivot.y = b.height/2
+			t.position.set(128,128)
+
+			c.addChild(t)
+
+			animate();
+			function animate() {
+				requestAnimationFrame(animate);
+			    	r.render(c);
+				t.rotation += 0.1
+				}//func
+
+			
+
+
+/*
+
+			var style = {
+			    font : 'bold italic 36px Arial',
+			    fill : '#F7EDCA',
+			    stroke : '#4a1850',
+			    strokeThickness : 5,
+			    dropShadow : true,
+			    dropShadowColor : '#000000',
+			    dropShadowAngle : Math.PI / 6,
+			    dropShadowDistance : 6,
+			    wordWrap : true,
+			    wordWrapWidth : 440
+			};
+
+*/
+		</script>
+	</body>
+</html>

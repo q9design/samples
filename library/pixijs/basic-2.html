@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+	<head>
+		<script src='pixi.js'></script>
+		<style>
+			canvas {background: yellow;}
+		</style>
+	</head>
+	<body>
+		<script>
+			console.log('PIXI',PIXI)
+
+			var r = PIXI.autoDetectRenderer(256,256)
+			r.backgroundColor = '0x0000ff'
+			document.body.appendChild(r.view)
+
+			var c = new PIXI.Container()
+			
+			var s = new PIXI.Sprite( PIXI.Texture.fromImage('boxy-guy.png') )
+		
+			s.anchor.x = 0.5
+			s.anchor.y = 0.5
+
+			s.position.x = 128
+			s.position.y = 128
+
+			s.scale.x = 10
+			s.scale.y = 10
+
+			s.rotation = 0.5
+
+			c.addChild(s)
+			
+			// ----------------------
+			function animate(){
+
+				r.render(c)
+				requestAnimationFrame(animate)
+				}//func
+
+			animate()
+		</script>
+	</body>
+</html>

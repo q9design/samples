@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+	<head>
+		<script src='pixi.js'></script>
+	</head>
+	<body>
+		<script>
+			console.log('PIXI',PIXI)
+
+			var r = PIXI.autoDetectRenderer(256,256)
+			console.log('renderer',r,r.view)
+			document.body.appendChild(r.view)
+
+		</script>
+	</body>
+</html>
