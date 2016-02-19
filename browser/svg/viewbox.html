@@ -1,0 +1,22 @@
+<style>
+	svg {border: solid 1px red;}
+	.a {width: 100px;}
+	.b {width: 300px; height: 300px;}
+</style>
+
+<p>viewBox sets the svg to scale mode?
+<svg class='a' viewBox = "0 0 50 60" version = "1.1">
+    <rect x = "5" y = "10" width = "40" height = "20" fill = "yellow" stroke = "black" stroke-width = "3"/>
+    <rect x = "3" y = "35" rx = "10" ry = "5" width = "40" height = "20" fill = "salmon" stroke = "black" stroke-width = "3"/>
+</svg>
+
+
+<p>Lack of viewBox sets the svg to clip mode?
+<svg class='b' version = "1.1">
+    <rect x = "100" y = "100" width = "400" height = "200" fill = "yellow" stroke = "black" stroke-width = "3"/>
+    <rect x = "100" y = "350" rx = "100" ry = "50" width = "400" height = "200" fill = "salmon" stroke = "black" stroke-width = "3"/>
+</svg>
+
+
+
+<p>upg: would be interesting to see how this behaves in other renderers.

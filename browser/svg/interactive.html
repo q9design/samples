@@ -1,0 +1,28 @@
+<style>
+	svg {border: solid 1px red;}
+	.a {width: 500px;}
+	circle {cursor: pointer; transition: cx 1s;}
+</style>
+
+<svg class='a' viewBox = "-50 -50 100 100" version = "1.1" xmlns="http://www.w3.org/2000/svg">
+    <rect x = "-25" y = "-5" width = "40" height = "20" fill = "yellow" stroke = "black" stroke-width = "3"/>
+    <rect x = "-20" y = "-17" rx = "20" ry = "5" width = "40" height = "20" fill = "salmon" stroke = "black" stroke-width = "3"/>
+    <circle cx="0" cy="0" r="5"/>
+</svg>
+
+
+
+
+<script>
+
+	//https://www.w3.org/TR/SVG/interact.html
+
+	var d = document.querySelector('circle')
+
+	d.onclick = function(e){
+		console.log('click',this)
+		//this.setAttributeNS(null,'cx',100) // when/why use setAttributeNS ?
+		var cx = this.getAttribute('cx')
+		this.setAttribute('cx',parseFloat(cx)+5)
+		}
+</script>

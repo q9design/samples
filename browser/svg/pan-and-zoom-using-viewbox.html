@@ -1,0 +1,41 @@
+<style>
+	svg {border: solid 1px red;}
+	.a {width: 500px;}
+</style>
+
+<svg class='a' viewBox = "-50 -50 100 100" version = "1.1" xmlns="http://www.w3.org/2000/svg">
+    <rect x = "-25" y = "-5" width = "40" height = "20" fill = "yellow" stroke = "black" stroke-width = "3"/>
+    <rect x = "-20" y = "-17" rx = "20" ry = "5" width = "40" height = "20" fill = "salmon" stroke = "black" stroke-width = "3"/>
+    <circle cx="0" cy="0" r="5"/>
+</svg>
+
+
+
+
+<script>
+	// upg: use proper camera pan and zoom code.
+	// upg: perhaps there's other more 'proper' ways of zoom / panning?
+
+	var svg = document.querySelector('svg')
+	console.log('%O',svg)
+
+	var stdWidth = 100
+	var stdHeight = 100
+	var x = 0
+	var y = 0
+	var zoom = 1
+	var animate = function(){
+		x -= 0.01
+		y -= 0.01
+		zoom += 0.0015
+		var dw = stdWidth/zoom
+		var dh = stdHeight/zoom 
+		var dx = ((x) * zoom)
+		var dy = ((y) * zoom)
+		svg.setAttribute('viewBox',`${dx} ${dy} ${dw} ${dh}`)
+
+		requestAnimationFrame(animate)
+		}
+
+	animate()
+</script>
