@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Service Worker -- More</title>
+	</head>
+	<body>
+		<h1>Install Phase</h1>
+		<script>
+			var err = err=>{console.log('err',err)}
+
+ 			 navigator.serviceWorker.register('sw.js', { scope: './' }).
+				then(reg=>{
+					    // registration worked
+					    console.log(reg,'Registration succeeded. Scope is ' + reg.scope,new Date())
+					  }).
+				catch(err)
+
+			navigator.serviceWorker.oncontrollerchange = e=>{
+				console.log('a controler change!!',e,new Date())
+
+				//could get data here to update...
+				//or could... maybee..
+				location.reload()
+				}
+
+			
+		</script>
+	</body>
+</html>

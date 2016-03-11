@@ -1,0 +1,34 @@
+
+2016.03.11 -- sync not yet on statndards track.
+
+
+
+"sync" will fire when the UA believes the user has connectivity.
+
+.lastChange == true when this is your last change to try sync
+
+
+------------------
+
+how to give feedback to main app?
+
+
+==================
+
+https://www.chromestatus.com/feature/6170807885627392
+
+
+https://github.com/WICG/BackgroundSync/blob/master/explainer.md
+
+https://developers.google.com/web/updates/2015/12/background-sync?hl=en
+
+https://wicg.github.io/BackgroundSync/spec/
+
+
+sync -- one-off sync -- more critical data
+
+periodicsync -- peroidically sync. -- more casual data
+
+
+! SYNC EVENTS MUST USE *HTTPS* WHEN FETCHING.
+

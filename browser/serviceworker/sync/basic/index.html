@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Sync -- Service Worker</title>
+</title>
+	</head>
+	<body>
+		<h1>Install Phase</h1>
+		<script>
+			var err = err=>{console.log('err',err)}
+
+ 			 navigator.serviceWorker.register('sw.js', { scope: './' }).
+				then(reg=>{
+					    // registration worked
+					    console.log(reg,'Registration succeeded. Scope is ' + reg.scope)
+					  }).
+				catch(err)
+
+			
+		</script>
+	</body>
+</html>

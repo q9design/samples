@@ -1,0 +1,16 @@
+
+> push kinda want's you to generate a notifiaction for each push you recieve.
+
+-- next: try using google api ... https://developer.mozilla.org/en-US/docs/Web/API/Push_API/Using_the_Push_API
+	- when / how will you be able to make your own push service or system .. it would be nice to be able to use WebRTC.
+
+> you'll want to preask for notification support for your app.
+
+> Each browser has its own push messaging server to handle sending the push message.  .. (can browsers form a standard to generate/register your own server connection for push control instead of dedicated tied to the browser type?) .. firefox does this automatically but chrome requires app ids in manifest.json.
+
+> The service worker has to subscribe to the push messaging service. *Each session is given its own unique endpoint* when it subscribes to the push messaging service. This endpoint is obtained from the (PushSubscription.endpoint) property on the subscription object. This endpoint can be sent to your server and used to send a message to that session's active service worker.
+
+----------------------------------
+
+2016.03.11 Note: Chrome currently requires you to set up a project on Google Cloud Messaging to send push messages, and use the associated project number and API key when sending push notifications. It also requires an app manifest with some special parameters to use this service. This restriction will hopefully be removed in the future.
+

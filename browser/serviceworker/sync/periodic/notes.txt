@@ -1,0 +1,8 @@
+https://www.chromestatus.com/feature/6170807885627392
+
+
+https://github.com/WICG/BackgroundSync/blob/master/explainer.md
+
+https://developers.google.com/web/updates/2015/12/background-sync?hl=en
+
+https://wicg.github.io/BackgroundSync/spec/
