@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<!--
+
+		http://stackoverflow.com/questions/10769631/is-there-a-map-uri-prefix-to-launch-map-application-like-mailto-or-tel
+		http://magentocommerceblog.blogspot.com/2014/03/how-to-open-native-map-app-from-mobile.html
+
+		-->
+		
+		<p>//https://en.wikipedia.org/wiki/Geo_URI_scheme
+		<p>Often these will open in a native mapping app.
+
+		<p><h3>General</h3>
+		<p><a target='_blank' href='https://maps.google.com?q=123+Main+Street'>123 Main Street</a> verfied: desktop chrome, android choice of app to launch, iOS may ask to install google maps.
+		<p><a href='geo:37.786971,-122.399677'>Somewhere</a> verified: android
+		<p><a target='_blank' href='https://maps.google.com?saddr=Current+Location&daddr=123+Main+Street'>Drive to 123 Main Street</a>
+
+		<p><h3>Android</h3>
+		<p><a href='geo:0,0?q=123+main+street'>123 Main Street</a> verified: android
+		<p><a href='google.streetview:cbll=42.374260,-71.120824&cbp=1,90,,0,1.0&mz=2'>Street View</a> verified: android
+
+		<p><h3>iOS</h3>
+		<p><a href='maps://maps.apple.com/maps?daddr=37.786971,-122.399677'>Driving Somewhere</a> verified: iOS
+		<p><a href='maps://maps.apple.com/maps?q=123+Main+Street'>123 Main Street</a> verified: iOS
+		<p><a href='http://maps.apple.com/?ll=37.78,-122.399'>Somewhere</a>
+
+		<p><h3>Windows Phone</h3>
+		<p><a href='maps:123+Main+Street'>123 Main Street</a>
+		<p><a href='bingmaps:?cp=37.786971,-122.399677'>Somewhere</a>
+
+	</body>
+</html>

@@ -1,0 +1,5 @@
+2016.03.25
+	- mobile devices may monitor and 'hijack' clinks to normal urls (like mapping urls) and redirect to a native app.
+
+upg: make a custom element tag  .. smart works on all devices.
+	<poly-geo location='location-string-here'>Clickable Content</poly-geo>
