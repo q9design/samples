@@ -1,0 +1,5 @@
+--watch
+--progress
+--colors
+
+webpack-dev-server (8080)
