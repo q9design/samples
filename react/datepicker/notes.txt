@@ -3,3 +3,5 @@ browserify -t [ babelify --presets [ react ] ] main.js -o bundle.js
 
 https://www.npmjs.com/package/react-datepicker
 http://hacker0x01.github.io/react-datepicker/
+
+next: how to compile with css and have jsx? work too?

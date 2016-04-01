@@ -4,7 +4,7 @@ var moment = require('moment')
 var ReactDom = require('react-dom')
 
 
-//require('react-datepicker/dist/react-datepicker.css');
+require('react-datepicker/dist/react-datepicker.css');
  
 var Example = React.createClass({
   displayName: 'Example',

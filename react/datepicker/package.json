@@ -17,6 +17,8 @@
   "devDependencies": {
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.2.0",
+    "css-loader": "^0.23.1",
+    "style-loader": "^0.13.1",
     "webpack": "^1.12.14"
   }
 }
