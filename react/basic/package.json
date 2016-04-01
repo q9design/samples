@@ -1,0 +1,19 @@
+{
+  "name": "basic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^0.14.8",
+    "react-dom": "^0.14.8"
+  },
+  "devDependencies": {
+    "babel-preset-react": "^6.5.0",
+    "babelify": "^7.2.0"
+  }
+}
