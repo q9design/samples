@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+	<head>
+		<style>
+			body {display: flex;}
+			.preview {min-width: 333px; border: solid 1px #ccc;}
+		</style>
+	</head>
+	<body>
+		<div class='preview'></div>
+		<div class='control'>
+			<input name='origin-x' type='range' min=0 max=100>
+			<input name='origin-y' type='range' min=0 max=100>
+		</div>
+		<pre class='settings'></pre>
+
+
+
+		<script>
+		// upg: use dom access for changes instead of whole string replace?  -- or a mix -- str for css -- dom for svg
+		// upg: init string from document?
+
+		var todo = []
+
+		var set = {
+			"origin-x" : '50',
+			"origin-y" : '50'
+			}
+
+		var dPreview = document.querySelector('.preview')
+		var dSettings = document.querySelector('.settings')
+
+		var l = document.querySelectorAll('input')
+		for(var i = 0; i<l.length ; i++){
+			todo.push(l[i])
+			}
+
+		console.log('todo',todo)
+
+		var update = s=>{
+			var c = content
+			for(var i in set){
+				var v = set[i]
+				c = c.replace(new RegExp("{{"+i+"}}",'g'),v)
+				}
+
+			dPreview.innerHTML = c
+
+			dSettings.textContent = JSON.stringify(set) + c
+
+			}
+
+		todo.forEach(v=>v.onchange = e=>{
+			var n = v.name
+			var val = v.value
+			set[n] = val
+			update(set)
+			})
+
+
+		for(var i in set){
+			var v = set[i]
+			var d = document.querySelector('[name="'+i+'"]')
+			d.value = v
+			}
+
+
+		//..............................................................
+
+		var content = `
+		<style>
+
+			svg {width: 100%; height: 100%:}
+
+			.actor {animation: do-a-flip 15s linear infinite; /* keyframe-ref duration easing repeat */
+				transform-origin: {{origin-x}}% {{origin-y}}%;
+				transform: translate(0%, 0%);
+				}
+
+			.ref {transform: translate( {{origin-x}}%, {{origin-y}}%);}
+
+			@keyframes do-a-flip {
+				0% {transform: rotate(0turn);}
+				100% {transform: rotate(1turn);}
+				}
+		</style>
+
+		<svg  xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100">
+		    <rect class='actor' x="25" y="25" height="50" width="50" style="stroke:#ffff00; fill: #0000ff"/>
+		    <rect class='ref' x="0" y="0" height="5" width="5" opacity='0' style="stroke:#ffff00; fill: #ff0"/>
+
+		</svg>
+		`
+
+		update(set)
+		</script>
+					
+	</body>
+</html>
+
+
+
