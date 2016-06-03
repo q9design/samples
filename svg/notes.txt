@@ -1,1 +1,7 @@
 next: try dom style svg create
+
+<svg
+	preserveAspectRatio = 'none' // will stretch
+	viewBox = '0 0 100 100'  // org-x org-y width height   -- http://www.justinmccandless.com/demos/viewbox/index.html
+	
+>
