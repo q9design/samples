@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "hjson": "^1.8.4"
+    "hjson": "^1.8.4",
+    "prompt": "^1.0.0"
   }
 }

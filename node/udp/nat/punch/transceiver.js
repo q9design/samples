@@ -7,6 +7,10 @@
 // https://en.wikipedia.org/wiki/UDP_hole_punching
 // https://en.wikipedia.org/wiki/STUN
 
+
+// A => [ ] <= B  ... when both try to send to correct WANIP:WANPORT .. once BOTH sides have tried.. packets flow .. cool!
+
+
 // upg: provide a secret.
 
 // upg: punch works. (get's data from remote server and back)
@@ -15,7 +19,11 @@
 
 // next: try ice.
 
+// upg: add colors (chalk npm)
+
 // next: try two rinfo servers and see if get same port
+
+// next: try connect two devices behand nat using same port... what/how does nat assign?
 
 const fs = require('fs')
 const Hjson = require('hjson')
@@ -23,6 +31,7 @@ const dns = require('dns')
 
 const dgram = require('dgram')
 const udp = dgram.createSocket('udp4')
+const prompt = require('prompt')
 
 var config
 var waiting_addr = []
@@ -52,18 +61,42 @@ fs.readFile('config.hjson',(err,data)=>{
 				var public_port = m.port
 				console.log('hailing from',public_address,public_port)
 				//upg: fun.. auto map to dyndns at this point?
+
+				prompt.start()
+				prompt.get(['host','port'],(err,result)=>{
+					console.log(err,result)
+
+
+					var message = Buffer.from('hello!! '+new Date())
+	
+					var tick = n=>{
+						var port = parseInt(result.port)
+						var host = result.host
+						console.log('sending',message,host,':',port)
+						udp.send(message,port,host,(err)=>{
+							console.log('sent',err)
+							setTimeout(tick,2500)
+							})
+						}
+
+					tick()
+					})
+				
+
 				}//if
 		}//try
 		catch(e){
-			console.log('message not json?',msg,new Date())
+			console.log('message not json?',msg,msg.toString(),new Date())
 			}//catch
 
 		})//func
 		
 
 	// ---------------
-	udp.bind(12345,'0.0.0.0',(err)=>{
+	udp.bind((err)=>{
 		console.log('bind',err)
+
+		console.log("localy i'm",udp.address())
 
 		var punch_host = config.punch_host
 
