@@ -1,0 +1,14 @@
+{
+  "name": "nat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "basic-client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "hjson": "^1.8.4"
+  }
+}

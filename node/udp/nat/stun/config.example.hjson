@@ -1,0 +1,11 @@
+// copy this to config.hson
+pinghost: sample-domain.com
+
+remote_addr: 127.0.0.1
+remote_port: 12345
+
+local_port: 12345
+
+
+
+

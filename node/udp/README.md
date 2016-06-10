@@ -19,3 +19,12 @@ min 68 bytes MTU (up to min 576?)
 use DF (dont' fragment flag) and ICMP? to figure max size for path?
 
 ip addr show  .. see MTU
+
+
+echo -n "test" | nc -u -w1 example-domain.com 19302
+
+
+
+http://mikeberggren.com/post/53883822425/ncudp
+
+packan -S gnu-netcat
