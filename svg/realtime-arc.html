@@ -3,17 +3,20 @@
 	<head>
 		<style>
 			body {display: flex;}
-			.preview {min-width: 333px; border: solid 1px #ccc; padding: 20%;}
+			.preview {min-width: 333px; border: solid 1px #ccc; padding: 20px;}
+			svg {border: solid 1px #ccc;}
 		</style>
 	</head>
 	<body>
 		<div class='preview'></div>
 		<div class='control'>
+			width<input name='width' type='range' min=0 max=1000><br>
+			height<input name='height' type='range' min=0 max=1000><br>
 			origin-x<input name='origin-x' type='range' min=0 max=100><br>
 			origin-y<input name='origin-y' type='range' min=0 max=100><br>
 			translate-x<input name='translate-x' type='range' min=-100 max=100><br>
 			translate-y<input name='translate-y' type='range' min=-100 max=100><br>
-			stroke<input name='stroke-width' type='range' min=0 max=30><br>
+			stroke<input name='stroke-width' type='range' min=0 max=100><br>
 			viewbox-x<input name='viewbox-x' type='range' min=0 max=300><br>
 			viewbox-y<input name='viewbox-y' type='range' min=0 max=300><br>
 		</div>
@@ -29,6 +32,8 @@
 		var todo = []
 
 		var set = {
+			"width" : '100',
+			"height" : '100',
 			"origin-x" : '50',
 			"origin-y" : '50',
 			"translate-x" : '0',
@@ -81,7 +86,7 @@
 		var content = `
 		<style>
 
-			svg {width: 100%; height: 100%:}
+			svg {width: {{width}}%; height: {{height}}%:}
 
 			.actor {animation: do-a-flip 15s linear infinite; /* keyframe-ref duration easing repeat */
 				transform-origin: {{origin-x}}% {{origin-y}}%;
@@ -97,7 +102,7 @@
 		</style>
 
 		<svg  xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 {{viewbox-x}} {{viewbox-y}}">
-			<g class='actor' stroke="#000" stroke-width={{stroke-width}} fill="none">
+			<g class='actor' stroke="#000" stroke-width={{stroke-width}}% fill="none">
 				<circle class='ref' cx=50% cy=50% r=50% opacity="0.2"/>
 			</g>
 
