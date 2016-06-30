@@ -1,0 +1,3 @@
+(dgram.createSocket({type:'udp4',reuseAddr:true}) ... can reuse the same broadcast/port
+socket.setBroadcast(true)  ... allows broadcast sending
+

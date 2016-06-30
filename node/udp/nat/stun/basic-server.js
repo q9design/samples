@@ -24,8 +24,8 @@ fs.readFile('config.hjson',(err,data)=>{
 	})
 
 
-var sc = stun.connect(19302,'stun.l.google.com')
-var sc2 = stun.connect(19302,'stun.l.google.com')
+var sc = stun.connect(19302,'stun.l.example.com')
+var sc2 = stun.connect(19302,'stun.l.example.com')
 
 
 sc.on('error',(err)=>{

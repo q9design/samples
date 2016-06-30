@@ -1,0 +1,16 @@
+{
+  "name": "push-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^0.9.0",
+    "request": "^2.72.0",
+    "web-push-encryption": "^2.0.0"
+  }
+}
