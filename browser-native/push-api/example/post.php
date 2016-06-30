@@ -7,9 +7,19 @@
 // upg: use cloudflare location headers info? .. and include in log
 $ip = $_SERVER['REMOTE_ADDR'];
 
-$params = array_merge($_GET,$_POST);
-$params['ip'] = $ip;
+$c = trim(file_get_contents("php://input"));
 
+try{
+	$params = json_decode($c,true);
+
+	}
+catch(Exception $e){
+	echo "Could not decode JSON";
+	var_dump($c);
+	$params = Array();
+	}
+
+$params['ip'] = $ip;
 
 $r = file_put_contents('endpoints/log.txt',json_encode($params)."\n",FILE_APPEND);
 if($r !== false)
