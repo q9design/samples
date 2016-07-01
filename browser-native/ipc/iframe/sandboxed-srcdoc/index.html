@@ -1,0 +1,34 @@
+<iframe></iframe>
+
+<script>
+
+
+var go = n=>{
+	var d = document.querySelector('iframe')
+	d.srcdoc = c
+	d.sandbox = 'allow-scripts'
+	window.onmessage = e=>{
+		console.log('a message!',e)
+		}
+
+	var to = d.contentWindow
+	console.log('can send to',to)	
+}//func
+
+
+
+/////////////////////////////
+	var c = 
+	`
+	<h1>Frame</h1>
+	<`+`script>
+		var top = window.top
+		var to = window.parent
+		console.log('FRAME:','window',window,'parent',to)
+		to.postMessage('hello!','*')
+	<`+`/script>
+	`
+
+go()
+
+</script>

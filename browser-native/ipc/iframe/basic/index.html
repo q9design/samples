@@ -1,0 +1,11 @@
+<iframe src='frame.html'></iframe>
+
+<script>
+	var d = document.querySelector('iframe')
+	window.onmessage = e=>{
+		console.log('a message!',e)
+		}
+
+	var to = d.contentWindow
+	console.log('can send to',to)	
+</script>

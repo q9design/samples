@@ -1,0 +1,7 @@
+<h1>Frame</h1>
+<script>
+	var top = window.top
+	var to = window.parent
+	console.log('FRAME:','window',window,'parent',to)
+	to.postMessage('hello!','*')
+</script>
