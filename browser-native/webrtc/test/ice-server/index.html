@@ -1,0 +1,55 @@
+<script src='adapter.js'></script>
+<script>
+	var err = e=>console.log('err',e)
+
+	fetch('config.json').
+		then(res=>{
+			return res.json()
+			}).
+		then(v=>{
+			console.log('config',v)
+
+			var servers =  {
+				'iceServers': [
+					{	url: 'stun:'+v.stun },
+					{ 
+						url: 'turn:'+v.turn,
+						username: 'bob',
+						passord: 'password'
+					} 
+			  		]} 
+
+			var pcConstraint = null
+			var dcConstraint = null
+
+			console.log('new pc',servers)
+			var pc = new RTCPeerConnection(servers,pcConstraint)
+
+
+			pc.onicecandidate = e=>{
+				var c = e.candidate
+				if(c){
+					var cc = c.candidate
+					console.log('cc',c,cc)
+					document.body.innerHTML += '<p>'+cc
+					}
+				}
+
+			console.log('pc',pc)
+
+
+		
+			console.log('creating channel')
+			pc.createDataChannel('testchannel',null)
+
+			console.log('creating offer')
+			pc.createOffer().
+				then(d=>{
+					console.log('created offer',d)
+					pc.setLocalDescription(d)
+				}).
+				catch(err)
+
+			}).
+		catch(err)
+</script>
