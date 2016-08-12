@@ -1,6 +1,8 @@
 var watson = require('watson-developer-cloud');
 var fs = require('fs');
 
+// http://www.ibm.com/watson/developercloud/doc/speech-to-text/
+
 var c = JSON.parse(fs.readFileSync('config.json').toString())
 console.log(c)
  
