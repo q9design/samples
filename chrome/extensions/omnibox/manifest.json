@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+
+  "name": "IMS",
+  "description": "This extension shows omnibox options.",
+  "version": "1.0",
+
+  "omnibox":{"keyword":"ims"},
+  "background": {
+    "persistant": false,
+    "scripts": ["background.js"]
+  },
+  "permissions": []
+}
