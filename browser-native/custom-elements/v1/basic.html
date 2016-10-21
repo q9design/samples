@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Custom Elements v1</title>
+		<meta name='reference' content='https://developers.google.com/web/fundamentals/getting-started/primers/customelements'>
+	</head>
+	<body>
+		<x-example></x-example>
+		<script>
+
+		// -- main
+		class XExample extends HTMLElement{
+			constructor(){
+				super()
+
+				let root = this.attachShadow({mode:'open'})
+				root.innerHTML = 'hi'
+
+				}
+
+			connectedCallback(){
+				}
+			}
+
+		customElements.define('x-example',XExample)
+
+
+		</script>
+	</body>
+</html>

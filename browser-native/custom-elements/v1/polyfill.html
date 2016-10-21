@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Custom Elements v1</title>
+		<meta name='reference' content='https://developers.google.com/web/fundamentals/getting-started/primers/customelements'>
+	</head>
+	<body>
+		<x-example></x-example>
+		<script>
+
+			go = n=>{
+			// -- main
+			class XExample extends HTMLElement{
+				constructor(){
+					super()
+
+					let root = this.attachShadow({mode:'open'})
+					root.innerHTML = 'hi'
+
+					}
+
+				connectedCallback(){
+					}
+				}
+
+			customElements.define('x-example',XExample)
+			}
+
+
+
+			// -- polyfill
+			if(!('customElements' in window)){
+				let s = document.createElement('script')
+				s.async = true
+				s.src = 'custom-elements.min.js'
+				s.onload = go
+				document.head.appendChild(s)
+				}
+			else
+				go()
+
+
+
+
+
+
+
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Custom Elements v1</title>
+		<meta name='reference' content='https://developers.google.com/web/fundamentals/getting-started/primers/customelements'>
+	</head>
+	<body>
+		<x-example color='red'></x-example>
+		<script>
+			// html attribute >> object property
+
+			go = n=>{
+			// -- main
+			class XExample extends HTMLElement{
+
+				static get observedAttributes(){
+					return ['bob','color']
+					}
+
+				get bob(){ // html attribute bob
+					return this.bob // element property bob
+					}
+
+				set bob(v){
+					this.bob = v
+					}
+				
+
+				constructor(){
+					super()
+
+					let root = this.attachShadow({mode:'open'})
+					root.innerHTML = 'hi'
+
+					}
+
+				attributeChangedCallback(name,oldVal,newVal){ // added, remove, updated, replaced, initial value
+					console.log(this,'attr changed',name,oldVal,newVal)
+					if(name == 'color')
+						this.shadowRoot.innerHTML += newVal;
+
+					this[name] = newVal
+					}
+
+				}//class
+
+			customElements.define('x-example',XExample)
+			}//func
+
+
+			// -- polyfill
+			if(!('customElements' in window)){
+				let s = document.createElement('script')
+				s.async = true
+				s.src = 'custom-elements.min.js'
+				s.onload = go
+				document.head.appendChild(s)
+				}
+			else
+				go()
+
+
+		</script>
+	</body>
+</html>
