@@ -1,0 +1,30 @@
+<script>
+// https://github.com/diafygi/webcrypto-examples/#pbkdf2---derivebits
+
+//upg: convert string via sha256 to bits
+var randKey = n=>window.crypto.subtle.importKey('raw',window.crypto.getRandomValues(new Uint8Array(16)),{name: "PBKDF2"},false,['deriveKey','deriveBits'])
+
+
+randKey().then(v=>{
+	console.log('key',v)
+	var key = v
+
+	return window.crypto.subtle.deriveBits(
+		{
+		"name": "PBKDF2",
+		salt: window.crypto.getRandomValues(new Uint8Array(16)),
+		iterations: 1000,
+		hash: {name: "SHA-256"}, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+		},
+		 key, //your key from generateKey or importKey
+	        256 //the number of bits you want to derive
+		)
+
+	}).
+	then(v=>{
+		console.log('bits',new Uint8Array(v))
+		}).
+	catch(e=>console.log(e))
+
+
+</script>

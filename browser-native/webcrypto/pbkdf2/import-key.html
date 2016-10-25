@@ -1,0 +1,21 @@
+<script>
+
+// https://github.com/diafygi/webcrypto-examples/#pbkdf2---importkey
+
+window.crypto.subtle.importKey(
+    "raw", //only "raw" is allowed
+    window.crypto.getRandomValues(new Uint8Array(16)), //your password
+    {
+        name: "PBKDF2",
+    },
+    false, //whether the key is extractable (i.e. can be used in exportKey)
+    ["deriveKey", "deriveBits"] //can be any combination of "deriveKey" and "deriveBits"
+)
+.then(function(key){
+    //returns a key object
+    console.log(key);
+})
+.catch(function(err){
+    console.error(err);
+});
+</script>
