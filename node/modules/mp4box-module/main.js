@@ -9,6 +9,7 @@ const fs = require('fs')
 const util = require('util')
 
 var opts = JSON.parse(fs.readFileSync('config.json'))
+// {"fn":"/home/user/test.mp4"}
 
 var mb = new MP4Box()
 mb.onError = e=>{}
