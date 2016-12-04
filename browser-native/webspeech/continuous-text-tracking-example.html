@@ -1,0 +1,75 @@
+<style>
+	div {font-size: 150%;}
+	.selected {background: yellow;}
+</style>
+
+<button>Start</button>
+
+<div>
+	When I consider the magnitude of the subject which I am to bring before the House-a subject, in which the interests, not of this country, nor of Europe alone, but of the whole world, and of posterity, are involved: and when I think, at the same time, on the weakness of the advocate who has undertaken this great cause-when these reflections press upon my mind, it is impossible for me not to feel both terrified and concerned at my own inadequacy to such a task. But when I reflect, however, on the encouragement which I have had, through the whole course of a long and laborious examination of this question, and how much candour I have experienced, and how conviction has increased within my own mind, in proportion as I have advanced in my labours;-when I reflect, especially, that however averse any gentleman may now be, yet we shall all be of one opinion in the end;-when I turn myself to these thoughts, I take courage-I determine to forget all my other fears, and I march forward with a firmer step in the full assurance that my cause will bear me out, and that I shall be able to justify upon the clearest principles, every resolution in my hand, the avowed end of which is, the total abolition of the slave trade.
+</div>
+
+<script>
+	// upg: make tree for search?
+
+	var d = document.querySelector('div');
+
+	const no_highlight = ['the','of','and','i','to','that','this']
+ 
+	var text  = d.textContent
+	var atext = text.split(' ')
+	atext = atext.map((v,i)=>`<span class='item offset-${i}'>${v}</span>`)
+	d.innerHTML = atext.join(' ')
+	atext = Array.from(document.querySelectorAll('.item'))
+	
+	var xtext = text.toLowerCase().split(' ').map(v=>v.trim().replace(/[^a-z]/,''))
+
+	const SpeechRecognition = webkitSpeechRecognition
+
+	var r = new SpeechRecognition();
+
+	r.continuous = true
+	r.interimResults = true
+
+	//console.log('service',r.serviceURI,r.speechURI,r)
+
+	r.onresult = e=>{
+	
+		var rr = e.results
+	
+		console.log(rr)
+
+		for(let i =0;i< rr.length; i++){
+			let v = rr[i]
+			for(let i = 0;i<v.length;i++){
+				let vv = v[i]
+
+				var tx = vv.transcript.toLowerCase().split(' ')
+				tx = tx.filter(v=>xtext.includes(v))
+
+				//console.log(tx)
+
+		
+				Array.from(document.querySelectorAll('.item.selected')).forEach((v)=>{
+					v.classList.remove('selected')
+					})
+			
+
+				xtext.forEach((v,i)=>{
+					if(tx.includes(v) && !no_highlight.includes(v) && v.length > 3)
+						atext[i].classList.add('selected')
+					})
+
+				}//for
+			}//for
+		}//func
+
+	r.onend = e=>{
+		console.log('ended',e)
+		}
+
+	document.querySelector('button').onclick = e=>{
+		console.log('eee',e)
+		r.start()
+		}
+</script>
