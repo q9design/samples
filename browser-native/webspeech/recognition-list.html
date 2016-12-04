@@ -1,0 +1,38 @@
+<button>Start</button>
+
+<script>
+	// https://www.w3.org/TR/jsgf/
+	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+	const SpeechGrammerList = window.SpeechGrammerList || window.webkitSpeechGrammerList
+
+	console.log(window,Object.keys(window),SpeechRecognition,SpeechGrammerList)
+
+	var r = new SpeechRecognition()
+	var l = new window.webkitSpeechGrammarList()
+
+	l.addFromString('#JSGF V1.0; grammer sizes; public <sizes> = small | medium | large ;',1)
+
+	r.grammers = l
+
+	r.continuous = true
+	r.interimResults = true
+
+	
+
+
+	r.onresult = e=>{
+	
+		var rr = e.results
+	
+		console.log(rr)
+		}//func
+
+	r.onend = e=>{
+		console.log('ended',e)
+		}
+
+	document.querySelector('button').onclick = e=>{
+		r.start()
+		}
+
+</script>
