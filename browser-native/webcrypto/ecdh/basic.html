@@ -1,0 +1,54 @@
+<script>
+	// https://github.com/diafygi/webcrypto-examples/#ecdh
+	// https://coolaj86.github.io/web-crypto-utahjs-preso/
+
+;(async function(){
+	const crys = window.crypto.subtle
+	const name = "ECDH"
+	const namedCurve = "P-256"
+
+	// -------------------------------------------
+	var keyA = await crys.generateKey(
+		{
+			name,
+			namedCurve
+		},
+		true, // extractable
+		['deriveKey','deriveBits']
+		)
+
+	var priA = keyA.privateKey
+	var pubA = keyA.publicKey
+
+
+	var keyB = await crys.generateKey(
+		{
+			name,
+			namedCurve
+		},
+		true, // extractable
+		['deriveKey','deriveBits']
+		)
+
+	var priB = keyB.privateKey
+	var pubB = keyB.publicKey
+
+	console.log('ab',keyA,keyB)
+
+
+
+	// -------------------------------------------
+	var b = await crys.deriveBits(
+		{
+			name,
+			namedCurve,
+			public:pubA
+			},
+		priB,
+		256)
+
+	console.log('B -> A  bits',new Uint8Array(b))
+
+
+	})()
+</script>

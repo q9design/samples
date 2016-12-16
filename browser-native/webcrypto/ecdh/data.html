@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head></head>
+<body></body>
+</html>
+<script>
+	// https://github.com/diafygi/webcrypto-examples/#ecdh
+	// https://coolaj86.github.io/web-crypto-utahjs-preso/
+
+	//
+	// ECDH + AES-GCM -- 2016.12.16
+	//
+
+
+;(async function(){
+	var start = performance.now()
+
+	const cry = window.crypto
+	const crys = window.crypto.subtle
+	const name = "ECDH"
+	const namedCurve = "P-256"
+
+	// -------------------------------------------
+	var keyA = await crys.generateKey(
+		{
+			name,
+			namedCurve
+		},
+		true, // extractable
+		['deriveKey','deriveBits']
+		)
+
+	var priA = keyA.privateKey
+	var pubA = keyA.publicKey
+
+
+	var keyB = await crys.generateKey(
+		{
+			name,
+			namedCurve
+		},
+		true, // extractable
+		['deriveKey','deriveBits']
+		)
+
+	var priB = keyB.privateKey
+	var pubB = keyB.publicKey
+
+	console.log('ab',keyA,keyB)
+
+
+
+	// -------------------------------------------
+	// B -> A
+	var kba = await crys.deriveKey(
+		{
+			name,
+			namedCurve,
+			public:pubA
+			},
+		priB,
+		{
+			name: "AES-GCM",
+		 	length: 256	
+			},
+		false,
+		['encrypt'])
+
+	console.log('B -> A  key',kba)
+
+
+	var iv = cry.getRandomValues(new Uint8Array(12))
+
+	var data = new TextEncoder().encode('Privacy is the ability of an individual or group to seclude themselves, or information about themselves, and thereby express themselves selectively.')
+
+
+	var c = await crys.encrypt(
+			{
+			name: "AES-GCM",
+			iv
+			},
+			kba,
+			data)
+
+	console.log(data,c)
+
+
+
+	// -------------------------------------------
+	// A -> B
+	var kab = await crys.deriveKey(
+		{
+			name,
+			namedCurve,
+			public:pubB
+			},
+		priA,
+		{
+			name: "AES-GCM",
+		 	length: 256	
+			},
+		false,
+		['decrypt'])
+
+	console.log('A -> B  key',kab)
+
+
+	var p = await crys.decrypt(
+			{
+			name: "AES-GCM",
+			iv
+			},
+			kab,
+			c)
+
+	var delta = performance.now()-start
+
+	var t = new TextDecoder().decode(p) 
+	console.log('pp',p,t)
+
+	document.body.textContent = t
+
+	console.log('delta',(Math.round(delta*1000)/1000)+'ms')
+	console.log('op/s:',Math.round(1000/delta))
+
+
+
+
+	
+
+	
+
+
+	})()
+</script>

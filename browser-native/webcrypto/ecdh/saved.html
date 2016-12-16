@@ -1,0 +1,148 @@
+<script>
+	// https://github.com/diafygi/webcrypto-examples/#ecdh
+	// https://coolaj86.github.io/web-crypto-utahjs-preso/
+
+;(async function(){
+	const crys = window.crypto.subtle
+	const name = "ECDH"
+	const namedCurve = "P-256"
+
+	// -------------------------------------------
+	var keys = localStorage['A']
+	var keyA
+	var priA
+	var pubA
+
+	if(!keys){
+		keyA = await crys.generateKey(
+			{
+				name,
+				namedCurve
+			},
+			true, // extractable
+			['deriveKey','deriveBits']
+			)
+
+		
+
+		priA = keyA.privateKey
+		pubA = keyA.publicKey
+
+		var xpriA = await crys.exportKey("jwk",priA)
+		var xpubA = await crys.exportKey("jwk",pubA)
+
+		var k = {pri:xpriA,pub:xpubA}
+		localStorage['A'] = JSON.stringify(k)
+
+		}//if
+	else{
+		console.log('reusing A')
+
+		keys = JSON.parse(keys)
+		console.log('keys',keys)
+		priA = await crys.importKey(
+				'jwk',
+				keys.pri,
+				{name,namedCurve},
+				false,
+				['deriveKey','deriveBits']
+			) 
+
+		pubA = await crys.importKey(
+				'jwk',
+				keys.pub,
+				{name,namedCurve},
+				false,
+				[]
+			)
+		}
+
+
+	// -------------------------------------------
+	var keys = localStorage['B']
+	var keyB
+	var priB
+	var pubB
+
+	if(!keys){
+		keyB = await crys.generateKey(
+			{
+				name,
+				namedCurve
+			},
+			true, // extractable
+			['deriveKey','deriveBits']
+			)
+
+		
+
+		priB = keyB.privateKey
+		pubB = keyB.publicKey
+
+		var xpriB = await crys.exportKey("jwk",priB)
+		var xpubB = await crys.exportKey("jwk",pubB)
+
+		var k = {pri:xpriB,pub:xpubB}
+		localStorage['B'] = JSON.stringify(k)
+
+		}//if
+	else{
+		console.log('reusing B')
+		keys = JSON.parse(keys)
+		console.log('keys',keys)
+		priB = await crys.importKey(
+				'jwk',
+				keys.pri,
+				{name,namedCurve},
+				false,
+				['deriveKey','deriveBits']
+			) 
+
+		pubB = await crys.importKey(
+				'jwk',
+				keys.pub,
+				{name,namedCurve},
+				false,
+				[]
+			)
+		}
+		console.log(priA,pubA,priB,pubB)
+
+	
+
+
+
+	// -------------------------------------------
+	var b = await crys.deriveBits(
+		{
+			name,
+			namedCurve,
+			public:pubA
+			},
+		priB,
+		256)
+
+						      // using the same key pair will result in the same bits either way
+	console.log('B -> A  bits',new Uint8Array(b)) // [36, 232, 166, 29, 5, 103, 86, 142, 12, 100, 127, 190, 76, 212, 67, 232, 205, 133, 222, 72, 223, 61, 137, 126, 213, 219, 92, 131, 21, 67, 38, 18]
+
+
+
+	// -------------------------------------------
+	var a = await crys.deriveBits(
+		{
+			name,
+			namedCurve,
+			public:pubB
+			},
+		priA,
+		256)
+
+						      // using the same key pair will result in the same bits either way
+	console.log('A -> B  bits',new Uint8Array(a)) // [36, 232, 166, 29, 5, 103, 86, 142, 12, 100, 127, 190, 76, 212, 67, 232, 205, 133, 222, 72, 223, 61, 137, 126, 213, 219, 92, 131, 21, 67, 38, 18]
+
+
+	
+
+
+	})()
+</script>
