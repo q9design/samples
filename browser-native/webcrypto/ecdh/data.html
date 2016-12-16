@@ -121,9 +121,10 @@
 
 	console.log('delta',(Math.round(delta*1000)/1000)+'ms')
 	var ops = Math.round(1000/delta) 
-	console.log('op/s:',opts)
+	console.log('op/s:',ops)
 
-	document.body.textContent = `<b>${ops}</b> - ${t}`
+	document.body.innerHTML = `<b>${ops} op/s</b>`
+	document.body.textContent += ` - ${t}`
 
 
 
