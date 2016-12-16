@@ -118,10 +118,13 @@
 	var t = new TextDecoder().decode(p) 
 	console.log('pp',p,t)
 
-	document.body.textContent = t
 
 	console.log('delta',(Math.round(delta*1000)/1000)+'ms')
-	console.log('op/s:',Math.round(1000/delta))
+	var ops = Math.round(1000/delta) 
+	console.log('op/s:',opts)
+
+	document.body.textContent = `<b>${ops}</b> - ${t}`
+
 
 
 
